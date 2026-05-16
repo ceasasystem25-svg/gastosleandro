@@ -21,9 +21,9 @@
 <body class="bg-gray-100 text-gray-800 font-sans pb-24 select-none">
 
     <div id="loading" class="fixed inset-0 bg-blue-600 z-[100] flex flex-col items-center justify-center text-white transition-opacity duration-500">
-        <i class="fa-solid fa-cloud-arrow-down text-6xl mb-4 animate-bounce"></i>
-        <h1 class="text-2xl font-black tracking-wider">Finanças Pro v8</h1>
-        <p class="text-sm opacity-80 mt-2 flex items-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Abrindo...</p>
+        <i class="fa-solid fa-wallet text-6xl mb-4 animate-bounce"></i>
+        <h1 class="text-2xl font-black tracking-wider">Finanças Pro</h1>
+        <p class="text-sm opacity-80 mt-2 flex items-center"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Iniciando app zerado...</p>
     </div>
 
     <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-40">
@@ -253,11 +253,6 @@
             </div>
         </section>
 
-        <section class="pt-6">
-            <button onclick="limparTudo()" class="w-full py-4 text-[10px] uppercase font-bold text-red-400 border border-red-100 rounded-2xl hover:bg-red-50 transition-colors">
-                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Apagar Todos os Dados do App
-            </button>
-        </section>
     </main>
 
     <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around p-3 z-50 pb-5 sm:pb-3 shadow-[0_-4px_10px_-1px_rgba(0,0,0,0.05)]">
@@ -339,7 +334,6 @@
         const mesAtualStr = dataHoje.getMonth() + '-' + dataHoje.getFullYear();
         const diaHoje = dataHoje.getDate();
         
-        // Configura o input de data para mostrar o dia de hoje ao abrir
         document.getElementById('data-lancamento').value = dataHoje.toISOString().split('T')[0];
         document.getElementById('data-atual').innerText = dataHoje.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
 
@@ -376,32 +370,35 @@
         }
 
         // =========================================================
-        // 5. BANCO DE DADOS (FIREBASE E LOCALSTORAGE)
+        // 5. BANCO DE DADOS (FORÇANDO APP ZERADO!)
         // =========================================================
         async function iniciarFirebase() {
+            // MUDANÇA PRINCIPAL AQUI: Mudamos a "chave" para v9.
+            // Isso ignora qualquer lixo que tenha ficado salvo nas versões antigas
             carregarDadosLocais(); 
-            atualizarInterfaceGlobal(); // Já mostra a tela direto com o que tem no celular
+            atualizarInterfaceGlobal(); 
             
-            // Remove a tela azul IMEDIATAMENTE (sem travar)
+            // Remove a tela azul na hora
             document.getElementById('loading').style.opacity = '0';
             setTimeout(() => document.getElementById('loading').classList.add('hidden'), 500);
 
-            // Tenta puxar as coisas da nuvem silenciosamente
             try {
                 firebase.initializeApp(firebaseConfig);
                 db = firebase.firestore(); 
                 firebaseAtivo = true;
                 
-                const docSnap = await db.collection('app_financas').doc('meus_dados_v8').get();
+                // Salvando num documento NOVO na nuvem para começar 100% zerado
+                const docRef = db.collection('app_financas').doc('meus_dados_v9');
+                const docSnap = await docRef.get();
                 
                 if (docSnap.exists) {
                     const dadosNuvem = docSnap.data(); 
                     transacoes = dadosNuvem.transacoes || []; 
                     contasBancarias = dadosNuvem.contasBancarias || contasBancarias; 
                     contasPagar = dadosNuvem.contasPagar || [];
-                    atualizarInterfaceGlobal(); // Se a nuvem tiver coisa nova, atualiza de novo
+                    atualizarInterfaceGlobal(); 
                 } else {
-                    await db.collection('app_financas').doc('meus_dados_v8').set({ transacoes, contasBancarias, contasPagar });
+                    await docRef.set({ transacoes, contasBancarias, contasPagar });
                 }
                 document.getElementById('icone-nuvem').classList.replace('text-blue-300', 'text-green-400');
             } catch(e) { 
@@ -410,21 +407,24 @@
         }
 
         function carregarDadosLocais() {
-            transacoes = JSON.parse(localStorage.getItem('transacoes')) || [];
-            if(localStorage.getItem('contasBancarias')) contasBancarias = JSON.parse(localStorage.getItem('contasBancarias'));
-            contasPagar = JSON.parse(localStorage.getItem('contasPagar')) || [];
+            // Lendo de uma chave v9 nova. Se não tiver nada, começa vazio mesmo.
+            transacoes = JSON.parse(localStorage.getItem('transacoes_v9')) || [];
+            if(localStorage.getItem('contasBancarias_v9')) contasBancarias = JSON.parse(localStorage.getItem('contasBancarias_v9'));
+            contasPagar = JSON.parse(localStorage.getItem('contasPagar_v9')) || [];
         }
 
         function salvarEAtualizar() {
-            localStorage.setItem('transacoes', JSON.stringify(transacoes)); 
-            localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias)); 
-            localStorage.setItem('contasPagar', JSON.stringify(contasPagar));
+            // Salvando na chave v9
+            localStorage.setItem('transacoes_v9', JSON.stringify(transacoes)); 
+            localStorage.setItem('contasBancarias_v9', JSON.stringify(contasBancarias)); 
+            localStorage.setItem('contasPagar_v9', JSON.stringify(contasPagar));
             
             if(firebaseAtivo && db) {
                 document.getElementById('icone-nuvem').classList.replace('fa-cloud', 'fa-arrows-rotate'); 
                 document.getElementById('icone-nuvem').classList.add('fa-spin');
                 
-                db.collection('app_financas').doc('meus_dados_v8').set({ transacoes, contasBancarias, contasPagar })
+                // Salvando no arquivo v9 novo na nuvem
+                db.collection('app_financas').doc('meus_dados_v9').set({ transacoes, contasBancarias, contasPagar })
                 .then(() => {
                     setTimeout(() => { 
                         document.getElementById('icone-nuvem').classList.remove('fa-spin', 'fa-arrows-rotate'); 
@@ -442,20 +442,11 @@
             renderizarDashboard(); 
         }
 
-        function limparTudo() { 
-            if(confirm("Apagar todo o histórico de lançamentos e zerar o app?")) { 
-                transacoes = []; 
-                contasPagar.forEach(f => { f.statusMes = null; f.transacaoId = null; }); 
-                salvarEAtualizar(); 
-            } 
-        }
-
         // =========================================================
-        // 6. FUNÇÕES DE DATA (COM PROTEÇÃO PARA DADOS ANTIGOS!)
+        // 6. FUNÇÕES DE DATA
         // =========================================================
         function getMesAnoDaTransacao(tData) {
-            if (!tData) return mesAtualStr; // <--- A MÁGICA QUE EVITA O TRAVAMENTO AQUI
-            
+            if (!tData) return mesAtualStr;
             if(tData.includes('/')) {
                 const parts = tData.split('/'); 
                 return `${parts[1]}-${parts[2]}`; 
@@ -466,8 +457,7 @@
         }
 
         function formatarDataVisivel(tData) {
-            if (!tData) return 'S/Data'; // <--- PROTEÇÃO AQUI TAMBÉM
-            
+            if (!tData) return '--/--';
             if(tData.includes('-')) { 
                 const p = tData.split('-'); 
                 return `${p[2]}/${p[1]}`; 
@@ -554,8 +544,6 @@
             
             document.getElementById('caixa-reserva').innerText = formatarMoeda(reserva);
             document.getElementById('caixa-projetos').innerText = formatarMoeda(projetos);
-            document.getElementById('dash-reserva').innerText = formatarMoeda(reserva);
-            document.getElementById('dash-projetos').innerText = formatarMoeda(projetos);
 
             renderizarPainelBancos(saldosBancos);
             atualizarSelectBancos();
@@ -588,7 +576,7 @@
                 transacoes.unshift({ id: Date.now(), tipo: tipoAtual, valor: valorLancado, descricao: descricao, categoria: document.getElementById('categoria').value, contaId: cDest, contaNome: obterNomeConta(cDest), data: dataLanc });
             }
             
-            transacoes.sort((a,b) => new Date(b.data || a.id) - new Date(a.data || b.id)); // Também não trava se não tiver data no sort
+            transacoes.sort((a,b) => new Date(b.data || a.id) - new Date(a.data || b.id));
             
             document.getElementById('valor').value = ''; 
             document.getElementById('descricao').value = '';
@@ -650,7 +638,7 @@
         }
 
         // =========================================================
-        // 11. DESENHAR A INTERFACE (RENDERIZAÇÕES)
+        // 11. DESENHAR A INTERFACE
         // =========================================================
         function atualizarSelectBancos() {
             const selects = [document.getElementById('select-contas'), document.getElementById('select-origem'), document.getElementById('modal-select-conta')];
@@ -821,7 +809,7 @@
         }
 
         // =========================================================
-        // START - LIGA OS MOTORES AO ABRIR O APP
+        // START
         // =========================================================
         iniciarFirebase();
 
