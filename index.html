@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Controle Financeiro</title>
+    <!-- Tailwind CSS para um design lindo e responsivo -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js para os gráficos interativos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- FontAwesome para ícones amigáveis no celular -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans pb-12">
+
+    <!-- Header Principal -->
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro</h1>
+            <span id="data-atual" class="text-sm opacity-80"></span>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 space-y-6">
+
+        <!-- CARD DE SALDO GERAL -->
+        <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Saldo Total Disponível</p>
+            <h2 id="saldo-total" class="text-3xl font-black text-gray-900 mt-1">R$ 0,00</h2>
+            
+            <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100">
+                <div>
+                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Receitas</p>
+                    <p id="total-receitas" class="text-lg font-bold text-green-600">R$ 0,00</p>
+                </div>
+                <div>
+                    <p class="text-xs text-red-500 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Despesas</p>
+                    <p id="total-despesas" class="text-lg font-bold text-red-500">R$ 0,00</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SUB-CAIXAS / RESERVAS -->
+        <section class="grid grid-cols-2 gap-3">
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                <p class="text-xs text-amber-800 font-bold"><i class="fa-solid fa-shield-halved mr-1"></i> Reserva Emergência</p>
+                <p id="caixa-reserva" class="text-md font-black text-amber-900 mt-1">R$ 0,00</p>
+            </div>
+            <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl">
+                <p class="text-xs text-indigo-800 font-bold"><i class="fa-solid fa-bullseye mr-1"></i> Projetos Futuros</p>
+                <p id="caixa-projetos" class="text-md font-black text-indigo-900 mt-1">R$ 0,00</p>
+            </div>
+        </section>
+
+        <!-- GRÁFICO DE GASTOS -->
+        <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <h3 class="text-sm font-bold text-gray-700 mb-3"><i class="fa-solid fa-chart-pie mr-2 text-blue-500"></i>Distribuição dos Gastos</h3>
+            <div class="w-full max-w-[280px] mx-auto">
+                <canvas id="graficoGastos"></canvas>
+            </div>
+        </section>
+
+        <!-- FORMULÁRIO DE LANÇAMENTO (Fácil para Celular) -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+            <h3 class="text-md font-bold text-gray-900 mb-4"><i class="fa-solid fa-plus mr-2 text-green-500"></i>Novo Lançamento</h3>
+            <form id="form-transacao" class="space-y-4">
+                
+                <!-- Tipo de Transação -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button type="button" id="btn-despesa" onclick="setTipo('despesa')" class="py-2.5 rounded-xl font-bold text-sm border-2 border-red-500 bg-red-50 text-red-600 transition-all">
+                        <i class="fa-solid fa-minus mr-1"></i> Despesa
+                    </button>
+                    <button type="button" id="btn-receita" onclick="setTipo('receita')" class="py-2.5 rounded-xl font-bold text-sm border-2 border-gray-200 text-gray-500 transition-all">
+                        <i class="fa-solid fa-plus mr-1"></i> Receita
+                    </button>
+                </div>
+
+                <!-- Valor e Descrição -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Valor (R$)</label>
+                        <input type="number" id="valor" step="0.01" required placeholder="0,00" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 text-lg font-semibold">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Descrição</label>
+                        <input type="text" id="descricao" required placeholder="Ex: Mercado" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+
+                <!-- Categoria e Origem/Destino -->
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Categoria</label>
+                        <select id="categoria" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 text-sm">
+                            <option value="Mercado">Mercado</option>
+                            <option value="Combustível">Combustível</option>
+                            <option value="Aluguel">Aluguel</option>
+                            <option value="Luz/Água">Luz/Água</option>
+                            <option value="Streaming/Internet">Streaming/Internet</option>
+                            <option value="Reserva">Reserva Emergência</option>
+                            <option value="Projetos">Caixa Projetos</option>
+                            <option value="Salário">Salário / Entrada</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Forma / Conta</label>
+                        <select id="conta" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 text-sm">
+                            <option value="Dinheiro">Dinheiro em Espécie</option>
+                            <option value="Conta Corrente">Conta Corrente</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Poupança">Conta Poupança</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-md mt-2">
+                    <i class="fa-solid fa-check mr-2"></i>Confirmar Lançamento
+                </button>
+            </form>
+        </section>
+
+        <!-- HISTÓRICO DE MOVIMENTAÇÕES -->
+        <section class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-center mb-3">
+                <h3 class="text-sm font-bold text-gray-700"><i class="fa-solid fa-list mr-2 text-gray-500"></i>Últimos Lançamentos</h3>
+                <button onclick="limparTudo()" class="text-xs text-red-500 font-semibold hover:underline">Limpar Dados</button>
+            </div>
+            <div id="historico" class="space-y-2 max-h-60 overflow-y-auto pr-1">
+                <!-- Inserido via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Configuração Inicial e Estado da App
+        let transacoes = JSON.parse(localStorage.getItem('transacoes')) || [];
+        let tipoAtual = 'despesa';
+        let meuGrafico = null;
+
+        // Mostrar data atual no topo
+        document.getElementById('data-atual').innerText = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
+
+        function setTipo(tipo) {
+            tipoAtual = tipo;
+            const btnDespesa = document.getElementById('btn-despesa');
+            const btnReceita = document.getElementById('btn-receita');
+            
+            if(tipo === 'despesa') {
+                btnDespesa.className = "py-2.5 rounded-xl font-bold text-sm border-2 border-red-500 bg-red-50 text-red-600 transition-all";
+                btnReceita.className = "py-2.5 rounded-xl font-bold text-sm border-2 border-gray-200 text-gray-500 transition-all";
+            } else {
+                btnReceita.className = "py-2.5 rounded-xl font-bold text-sm border-2 border-green-500 bg-green-50 text-green-600 transition-all";
+                btnDespesa.className = "py-2.5 rounded-xl font-bold text-sm border-2 border-gray-200 text-gray-500 transition-all";
+            }
+        }
+
+        // Submeter Formulário
+        document.getElementById('form-transacao').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const valor = parseFloat(document.getElementById('valor').value);
+            const descricao = document.getElementById('descricao').value;
+            const categoria = document.getElementById('categoria').value;
+            const conta = document.getElementById('conta').value;
+
+            const novaTransacao = {
+                id: Date.now(),
+                tipo: tipoAtual,
+                valor,
+                descricao,
+                categoria,
+                conta,
+                data: new Date().toLocaleDateString('pt-BR')
+            };
+
+            transacoes.unshift(novaTransacao); // Adiciona no início
+            salvarEAtualizar();
+            
+            // Limpar campos
+            document.getElementById('valor').value = '';
+            document.getElementById('descricao').value = '';
+        });
+
+        function salvarEAtualizar() {
+            localStorage.setItem('transacoes', JSON.stringify(transacoes));
+            calcularFinancas();
+            renderizarHistorico();
+            atualizarGrafico();
+        }
+
+        function deletarTransacao(id) {
+            transacoes = transacoes.filter(t => t.id !== id);
+            salvarEAtualizar();
+        }
+
+        function limparTudo() {
+            if(confirm("Tem certeza que deseja apagar todo o histórico?")) {
+                transacoes = [];
+                salvarEAtualizar();
+            }
+        }
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Cálculos de Saldo, Receitas, Despesas e Caixas Específicos
+        function calcularFinancas() {
+            let receitas = 0;
+            let despesas = 0;
+            let reserva = 0;
+            let projetos = 0;
+
+            transacoes.forEach(t => {
+                if(t.tipo === 'receita') {
+                    if (t.categoria === 'Reserva') reserva += t.valor;
+                    else if (t.categoria === 'Projetos') projetos += t.valor;
+                    else receitas += t.valor;
+                } else {
+                    if (t.categoria === 'Reserva') reserva -= t.valor;
+                    else if (t.categoria === 'Projetos') projetos -= t.valor;
+                    else despesas += t.valor;
+                }
+            });
+
+            const saldoTotal = (receitas + reserva + projetos) - despesas;
+
+            document.getElementById('saldo-total').innerText = formatarMoeda(saldoTotal);
+            document.getElementById('total-receitas').innerText = formatarMoeda(receitas);
+            document.getElementById('total-despesas').innerText = formatarMoeda(despesas);
+            document.getElementById('caixa-reserva').innerText = formatarMoeda(reserva);
+            document.getElementById('caixa-projetos').innerText = formatarMoeda(projetos);
+        }
+
+        // Renderizar Lista na Tela
+        function renderizarHistorico() {
+            const container = document.getElementById('historico');
+            container.innerHTML = '';
+
+            if(transacoes.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-400 text-xs py-4">Nenhum lançamento efetuado.</p>`;
+                return;
+            }
+
+            transacoes.forEach(t => {
+                const isDespesa = t.tipo === 'despesa';
+                const div = document.createElement('div');
+                div.className = "flex justify-between items-center p-3 bg-gray-50 rounded-xl border border-gray-100 text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2 rounded-lg ${isDespesa ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}">
+                            <i class="fa-solid ${isDespesa ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-gray-800">${t.descricao}</p>
+                            <p class="text-[10px] text-gray-400">${t.categoria} • ${t.conta}</p>
+                        </div>
+                    </div>
+                    <div class="text-right flex items-center space-x-2">
+                        <span class="font-bold ${isDespesa ? 'text-red-500' : 'text-green-600'}">
+                            ${isDespesa ? '-' : '+'}${formatarMoeda(t.valor)}
+                        </span>
+                        <button onclick="deletarTransacao(${t.id})" class="text-gray-300 hover:text-red-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Atualizar Lógica do Gráfico Interativo
+        function actualizarGrafico() {
+            const categoriasGastos = {};
+            
+            // Filtrar apenas o que for despesa e somar por categorias de gastos reais
+            transacoes.forEach(t => {
+                if(t.tipo === 'despesa' && t.categoria !== 'Reserva' && t.categoria !== 'Projetos') {
+                    categoriasGastos[t.categoria] = (categoriasGastos[t.categoria] || 0) + t.valor;
+                }
+            });
+
+            const labels = Object.keys(categoriasGastos);
+            const dados = Object.values(categoriasGastos);
+
+            if (meuGrafico) {
+                meuGrafico.destroy();
+            }
+
+            const ctx = document.getElementById('graficoGastos').getContext('2d');
+            
+            if(labels.length === 0) {
+                ctx.clearRect(0, 0, 100, 100);
+                return;
+            }
+
+            meuGrafico = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dados,
+                        backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+                    }
+                }
+            });
+        }
+
+        // Executar ao abrir a página
+        calcularFinancas();
+        renderizarHistorico();
+        atualizarGrafico();
+    </script>
+</body>
+</html>
