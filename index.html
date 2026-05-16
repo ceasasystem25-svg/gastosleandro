@@ -16,7 +16,7 @@
     <!-- Header Principal -->
     <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro v4</h1>
+            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro v4.1</h1>
             <span id="data-atual" class="text-sm opacity-80"></span>
         </div>
     </header>
@@ -52,7 +52,7 @@
             <!-- Form para Adicionar Novo Banco -->
             <form id="form-conta" class="hidden bg-gray-50 p-3 rounded-xl mb-4 space-y-3 border border-gray-200">
                 <div class="grid grid-cols-2 gap-2">
-                    <input type="text" id="conta-nome" placeholder="Ex: Nubank, Itaú" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
+                    <input type="text" id="conta-nome" placeholder="Ex: Inter, Sicredi" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
                     <input type="number" id="conta-inicial" step="0.01" placeholder="Saldo Inicial R$" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white font-bold text-xs py-2 rounded-lg">Cadastrar Conta</button>
@@ -217,9 +217,6 @@
             }
         }
 
-        // ==========================================
-        // FUNÇÃO DE SALVAR ADICIONADA AQUI
-        // ==========================================
         function salvarEAtualizar() {
             localStorage.setItem('transacoes', JSON.stringify(transacoes));
             calcularFinancas();
@@ -243,9 +240,9 @@
             salvarEAtualizar();
         });
 
-        // Deletar Banco customizado
+        // Deletar QUALQUER Banco
         function deletarConta(id) {
-            if(confirm("Deseja mesmo remover esse banco? As transações vinculadas a ele perderão o vínculo.")) {
+            if(confirm("Deseja mesmo remover esse banco?")) {
                 contasBancarias = contasBancarias.filter(c => c.id !== id);
                 localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
                 salvarEAtualizar();
@@ -293,9 +290,10 @@
             const contaId = document.getElementById('select-contas').value;
             
             const contaObjeto = contasBancarias.find(c => c.id === contaId);
+            const nomeDoBanco = contaObjeto ? contaObjeto.nome : 'Sem Banco';
 
             transacoes.unshift({
-                id: Date.now(), tipo: tipoAtual, valor, descricao, categoria, contaId, contaNome: contaObjeto.nome, data: new Date().toLocaleDateString('pt-BR')
+                id: Date.now(), tipo: tipoAtual, valor, descricao, categoria, contaId, contaNome: nomeDoBanco, data: new Date().toLocaleDateString('pt-BR')
             });
             
             document.getElementById('valor').value = '';
@@ -335,14 +333,12 @@
                     else if (t.categoria === 'Projetos') projetos += t.valor;
                     else receitas += t.valor;
                     
-                    // Soma no banco correspondente
                     if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] += t.valor;
                 } else {
                     if (t.categoria === 'Reserva') reserva -= t.valor;
                     else if (t.categoria === 'Projetos') projetos -= t.valor;
                     else despesas += t.valor;
 
-                    // Subtrai do banco correspondente
                     if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] -= t.valor;
                 }
             });
@@ -372,9 +368,8 @@
                 const div = document.createElement('div');
                 div.className = "bg-gray-50 border border-gray-200 p-3 rounded-xl flex flex-col justify-between relative group";
                 
-                // Botão de deletar visível para contas criadas pelo usuário
-                const btnDeletar = c.id.startsWith('bc-') ? 
-                    `<button onclick="deletarConta('${c.id}')" class="absolute top-1 right-2 text-gray-300 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>` : '';
+                // Botão de deletar liberado para TODOS os bancos!
+                const btnDeletar = `<button onclick="deletarConta('${c.id}')" class="absolute top-1 right-2 text-gray-300 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>`;
 
                 div.innerHTML = `
                     ${btnDeletar}
@@ -387,7 +382,7 @@
 
         function atualizarSelectBancos() {
             const select = document.getElementById('select-contas');
-            const valorSelecionadoAntes = select.value; // CORREÇÃO DE DIGITAÇÃO AQUI
+            const valorSelecionadoAntes = select.value;
             select.innerHTML = '';
             
             contasBancarias.forEach(c => {
@@ -396,7 +391,7 @@
                 opt.innerText = c.nome;
                 select.appendChild(opt);
             });
-            if(valorSelecionadoAntes) select.value = valorSelecionadoAntes; // CORREÇÃO AQUI TAMBÉM
+            if(valorSelecionadoAntes) select.value = valorSelecionadoAntes;
         }
 
         function renderizarCustosFixos() {
@@ -460,7 +455,6 @@
             });
         }
 
-        // CORREÇÃO DO NOME DA FUNÇÃO AQUI
         function atualizarGrafico() {
             const categoriasGastos = {};
             transacoes.forEach(t => {
