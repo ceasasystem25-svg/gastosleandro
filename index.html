@@ -16,7 +16,7 @@
     <!-- Header Principal -->
     <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro v2</h1>
+            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro v4</h1>
             <span id="data-atual" class="text-sm opacity-80"></span>
         </div>
     </header>
@@ -25,33 +25,42 @@
 
         <!-- CARD DE SALDO GERAL -->
         <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Saldo Total Disponível</p>
+            <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Patrimônio Total (Onde está seu dinheiro)</p>
             <h2 id="saldo-total" class="text-3xl font-black text-gray-900 mt-1">R$ 0,00</h2>
             
             <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100">
                 <div>
-                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Receitas</p>
+                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Total Entradas</p>
                     <p id="total-receitas" class="text-base font-bold text-green-600">R$ 0,00</p>
                 </div>
                 <div>
-                    <p class="text-xs text-red-500 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Despesas</p>
+                    <p class="text-xs text-red-500 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Total Saídas</p>
                     <p id="total-despesas" class="text-base font-bold text-red-500">R$ 0,00</p>
                 </div>
             </div>
         </section>
 
-        <!-- RESUMO DE CUSTOS FIXOS DO MÊS -->
-        <section class="bg-gradient-to-br from-slate-800 to-slate-900 text-white p-5 rounded-2xl shadow-sm">
-            <h3 class="text-sm font-bold opacity-90 mb-3"><i class="fa-solid fa-calendar-check mr-2 text-blue-400"></i>Compromissos do Mês</h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <p class="text-[11px] uppercase opacity-60">Total de Custos Fixos</p>
-                    <p id="resumo-fixo-total" class="text-lg font-bold">R$ 0,00</p>
+        <!-- SEÇÃO: ONDE ESTÁ SEU DINHEIRO (Saldos por Conta/Banco) -->
+        <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-md font-bold text-gray-900"><i class="fa-solid fa-building-columns mr-2 text-blue-600"></i>Saldos por Conta / Banco</h3>
+                <button onclick="toggleFormConta()" class="text-xs bg-blue-100 text-blue-600 font-bold px-2.5 py-1.5 rounded-lg hover:bg-blue-200">
+                    <i class="fa-solid fa-plus"></i> Novo Banco
+                </button>
+            </div>
+
+            <!-- Form para Adicionar Novo Banco -->
+            <form id="form-conta" class="hidden bg-gray-50 p-3 rounded-xl mb-4 space-y-3 border border-gray-200">
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="text" id="conta-nome" placeholder="Ex: Nubank, Itaú" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
+                    <input type="number" id="conta-inicial" step="0.01" placeholder="Saldo Inicial R$" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
                 </div>
-                <div>
-                    <p class="text-[11px] uppercase opacity-60">Falta Pagar</p>
-                    <p id="resumo-fixo-pendente" class="text-lg font-bold text-amber-400">R$ 0,00</p>
-                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white font-bold text-xs py-2 rounded-lg">Cadastrar Conta</button>
+            </form>
+
+            <!-- Lista de Bancos/Contas com os valores calculados -->
+            <div id="lista-contas" class="grid grid-cols-2 gap-2">
+                <!-- Inserido dinamicamente via JS -->
             </div>
         </section>
 
@@ -67,7 +76,7 @@
             </div>
         </section>
 
-        <!-- SEÇÃO: GERENCIADOR DE CUSTOS FIXOS (EDITÁVEL) -->
+        <!-- SEÇÃO: GERENCIADOR DE CUSTOS FIXOS -->
         <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-md font-bold text-gray-900"><i class="fa-solid fa-file-invoice-dollar mr-2 text-indigo-600"></i>Minhas Contas Fixas</h3>
@@ -76,7 +85,6 @@
                 </button>
             </div>
 
-            <!-- Form para Adicionar Conta Fixa (Escondido por padrão) -->
             <form id="form-custo-fixo" class="hidden bg-gray-50 p-3 rounded-xl mb-4 space-y-3 border border-gray-200">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" id="fixo-nome" placeholder="Ex: Aluguel" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
@@ -85,9 +93,13 @@
                 <button type="submit" class="w-full bg-indigo-600 text-white font-bold text-xs py-2 rounded-lg">Salvar Conta Recorrente</button>
             </form>
 
-            <!-- Lista de Contas Fixas -->
             <div id="lista-custos-fixos" class="space-y-2">
-                <!-- Inserido dinamicamente via JS -->
+                <!-- Inserido via JS -->
+            </div>
+            
+            <div class="mt-4 p-3 bg-slate-900 text-white rounded-xl flex justify-between items-center text-xs">
+                <span>Falta pagar este mês:</span>
+                <span id="resumo-fixo-pendente" class="font-bold text-amber-400">R$ 0,00</span>
             </div>
         </section>
 
@@ -120,13 +132,13 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">Descrição</label>
-                        <input type="text" id="descricao" required placeholder="Ex: Pizza" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
+                        <input type="text" id="descricao" required placeholder="Ex: Mercado" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Categoria</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Categoria / Destino</label>
                         <select id="categoria" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
                             <option value="Mercado">Mercado</option>
                             <option value="Combustível">Combustível</option>
@@ -136,19 +148,16 @@
                             <option value="Lazer">Lazer</option>
                             <option value="Delivery">Delivery</option>
                             <option value="Viagem">Viagem</option>
-                            <option value="Reserva">Reserva Emergência</option>
-                            <option value="Projetos">Caixa Projetos</option>
-                            <option value="Salário">Salário / Entrada</option>
+                            <option value="Reserva">Reserva Emergência 🛡️</option>
+                            <option value="Projetos">Caixa Projetos 🎯</option>
+                            <option value="Salário">Salário / Entrada 💰</option>
                             <option value="Outros">Outros</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Forma / Conta</label>
-                        <select id="conta" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-                            <option value="Dinheiro">Dinheiro em Espécie</option>
-                            <option value="Conta Corrente">Conta Corrente</option>
-                            <option value="Cartão de Crédito">Cartão de Crédito</option>
-                            <option value="Poupança">Conta Poupança</option>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Origem ou Banco</label>
+                        <select id="select-contas" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700">
+                            <!-- Inserido dinamicamente via JS -->
                         </select>
                     </div>
                 </div>
@@ -173,8 +182,14 @@
     </main>
 
     <script>
-        // Armazenamento Local
+        // Transações de exemplo e Contas de exemplo padrão
         let transacoes = JSON.parse(localStorage.getItem('transacoes')) || [];
+        let contasBancarias = JSON.parse(localStorage.getItem('contasBancarias')) || [
+            { id: 'din', nome: '💵 Dinheiro em Espécie', saldoInicial: 0 },
+            { id: 'nub', nome: '💳 Nubank', saldoInicial: 0 },
+            { id: 'bb', nome: '🏦 Banco do Brasil', saldoInicial: 0 }
+        ];
+        
         let custosFixos = JSON.parse(localStorage.getItem('custosFixos')) || [
             { id: 1, nome: 'Aluguel', valor: 0, paga: false },
             { id: 2, nome: 'Luz / Água', valor: 0, paga: false },
@@ -186,10 +201,8 @@
 
         document.getElementById('data-atual').innerText = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
 
-        function toggleFormCustoFixo() {
-            const form = document.getElementById('form-custo-fixo');
-            form.classList.toggle('hidden');
-        }
+        function toggleFormCustoFixo() { document.getElementById('form-custo-fixo').classList.toggle('hidden'); }
+        function toggleFormConta() { document.getElementById('form-conta').classList.toggle('hidden'); }
 
         function setTipo(tipo) {
             tipoAtual = tipo;
@@ -204,22 +217,43 @@
             }
         }
 
-        // Adicionar Nova Conta Fixa
+        // Adicionar Novo Banco
+        document.getElementById('form-conta').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const nome = document.getElementById('conta-nome').value;
+            const saldoInicial = parseFloat(document.getElementById('conta-inicial').value) || 0;
+            
+            contasBancarias.push({ id: 'bc-' + Date.now(), nome, saldoInicial });
+            localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
+            
+            document.getElementById('conta-nome').value = '';
+            document.getElementById('conta-inicial').value = '';
+            toggleFormConta();
+            salvarEAtualizar();
+        });
+
+        // Deletar Banco customizado
+        function deletarConta(id) {
+            if(confirm("Deseja mesmo remover esse banco? As transações vinculadas a ele perderão o vínculo.")) {
+                contasBancarias = contasBancarias.filter(c => c.id !== id);
+                localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
+                salvarEAtualizar();
+            }
+        }
+
+        // Adicionar Custo Fixo
         document.getElementById('form-custo-fixo').addEventListener('submit', function(e) {
             e.preventDefault();
             const nome = document.getElementById('fixo-nome').value;
             const valor = parseFloat(document.getElementById('fixo-valor').value);
-            
             custosFixos.push({ id: Date.now(), nome, valor, paga: false });
             localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
-            
             document.getElementById('fixo-nome').value = '';
             document.getElementById('fixo-valor').value = '';
             toggleFormCustoFixo();
             salvarEAtualizar();
         });
 
-        // Alterar Valor da Conta Fixa Direto na Tela
         function editarValorFixo(id, novoValor) {
             const valorNum = parseFloat(novoValor) || 0;
             custosFixos = custosFixos.map(item => item.id === id ? { ...item, valor: valorNum } : item);
@@ -227,30 +261,30 @@
             calcularFinancas();
         }
 
-        // Alternar status de pago/pendente da conta fixa
         function togglePagaFixo(id) {
             custosFixos = custosFixos.map(item => item.id === id ? { ...item, paga: !item.paga } : item);
             localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
             salvarEAtualizar();
         }
 
-        // Excluir Conta Fixa da lista
         function deletarFixo(id) {
             custosFixos = custosFixos.filter(item => item.id !== id);
             localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
             salvarEAtualizar();
         }
 
-        // Lançamento diário
+        // Lançar Movimentação
         document.getElementById('form-transacao').addEventListener('submit', function(e) {
             e.preventDefault();
             const valor = parseFloat(document.getElementById('valor').value);
             const descricao = document.getElementById('descricao').value;
             const categoria = document.getElementById('categoria').value;
-            const conta = document.getElementById('conta').value;
+            const contaId = document.getElementById('select-contas').value;
+            
+            const contaObjeto = contasBancarias.find(c => c.id === contaId);
 
             transacoes.unshift({
-                id: Date.now(), tipo: tipoAtual, valor, descricao, categoria, conta, data: new Date().toLocaleDateString('pt-BR')
+                id: Date.now(), tipo: tipoAtual, valor, descricao, categoria, contaId, contaNome: contaObjeto.nome, data: new Date().toLocaleDateString('pt-BR')
             });
             
             document.getElementById('valor').value = '';
@@ -258,21 +292,13 @@
             salvarEAtualizar();
         });
 
-        function salvarEAtualizar() {
-            localStorage.setItem('transacoes', JSON.stringify(transacoes));
-            calcularFinancas();
-            renderizarHistorico();
-            renderizarCustosFixos();
-            atualizarGrafico();
-        }
-
         function deletarTransacao(id) {
             transacoes = transacoes.filter(t => t.id !== id);
             salvarEAtualizar();
         }
 
         function limparTudo() {
-            if(confirm("Deseja apagar todo o histórico de lançamentos?")) {
+            if(confirm("Apagar todo o histórico?")) {
                 transacoes = [];
                 salvarEAtualizar();
             }
@@ -282,39 +308,84 @@
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
+        // CÁLCULO PRINCIPAL
         function calcularFinancas() {
             let receitas = 0, despesas = 0, reserva = 0, projetos = 0;
+            
+            // Mapeia os saldos atuais baseados no saldo inicial dos bancos
+            let saldosBancos = {};
+            contasBancarias.forEach(c => {
+                saldosBancos[c.id] = c.saldoInicial;
+            });
 
             transacoes.forEach(t => {
                 if(t.tipo === 'receita') {
                     if (t.categoria === 'Reserva') reserva += t.valor;
                     else if (t.categoria === 'Projetos') projetos += t.valor;
                     else receitas += t.valor;
+                    
+                    // Soma no banco correspondente
+                    if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] += t.valor;
                 } else {
                     if (t.categoria === 'Reserva') reserva -= t.valor;
                     else if (t.categoria === 'Projetos') projetos -= t.valor;
                     else despesas += t.valor;
+
+                    // Subtrai do banco correspondente
+                    if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] -= t.valor;
                 }
             });
 
-            // Cálculos dos custos fixos
-            let totalFixo = 0;
             let totalFixoPendente = 0;
-            custosFixos.forEach(f => {
-                totalFixo += f.valor;
-                if(!f.paga) totalFixoPendente += f.valor;
-            });
+            custosFixos.forEach(f => { if(!f.paga) totalFixoPendente += f.valor; });
 
-            const saldoTotal = (receitas + reserva + projetos) - despesas;
+            const patrimonioTotal = Object.values(saldosBancos).reduce((a, b) => a + b, 0);
 
-            document.getElementById('saldo-total').innerText = formatarMoeda(saldoTotal);
+            document.getElementById('saldo-total').innerText = formatarMoeda(patrimonioTotal);
             document.getElementById('total-receitas').innerText = formatarMoeda(receitas);
             document.getElementById('total-despesas').innerText = formatarMoeda(despesas);
             document.getElementById('caixa-reserva').innerText = formatarMoeda(reserva);
             document.getElementById('caixa-projetos').innerText = formatarMoeda(projetos);
-            
-            document.getElementById('resumo-fixo-total').innerText = formatarMoeda(totalFixo);
             document.getElementById('resumo-fixo-pendente').innerText = formatarMoeda(totalFixoPendente);
+
+            renderizarPainelBancos(saldosBancos);
+            atualizarSelectBancos();
+        }
+
+        function renderizarPainelBancos(saldosCalculados) {
+            const container = document.getElementById('lista-contas');
+            container.innerHTML = '';
+
+            contasBancarias.forEach(c => {
+                const saldoAtual = saldosCalculados[c.id] || 0;
+                const div = document.createElement('div');
+                div.className = "bg-gray-50 border border-gray-200 p-3 rounded-xl flex flex-col justify-between relative group";
+                
+                // Botão de deletar visível para contas criadas pelo usuário
+                const btnDeletar = c.id.startsWith('bc-') ? 
+                    `<button onclick="deletarConta('${c.id}')" class="absolute top-1 right-2 text-gray-300 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>` : '';
+
+                div.innerHTML = `
+                    ${btnDeletar}
+                    <span class="text-[11px] font-bold text-gray-600 truncate pr-4">${c.nome}</span>
+                    <span class="text-sm font-black text-gray-900 mt-1">${formatarMoeda(saldoAtual)}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function atualizarSelectBancos() {
+            const select = document.getElementById('select-contas');
+            const valorSelecionado antes = select.value;
+            select.innerHTML = '';
+            
+            contasBancarias.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.innerText = c.nome;
+                select.appendChild(opt);
+            });
+            if(valorSelecionadoAntes) select.value = valorSelecionadoAntes;
         }
 
         function renderizarCustosFixos() {
@@ -349,7 +420,7 @@
             container.innerHTML = '';
 
             if(transacoes.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-400 text-xs py-4">Nenhum lançamento efetuado.</p>`;
+                container.innerHTML = `<p class="text-center text-gray-400 text-xs py-4">Nenhum lançamento.</p>`;
                 return;
             }
 
@@ -362,9 +433,9 @@
                         <div class="p-2 rounded-lg ${isDespesa ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}">
                             <i class="fa-solid ${isDespesa ? 'fa-arrow-trend-down' : 'fa-arrow-trend-up'}"></i>
                         </div>
-                        <div>
-                            <p class="font-bold text-gray-800">${t.descricao}</p>
-                            <p class="text-[10px] text-gray-400">${t.categoria} • ${t.conta}</p>
+                        <div class="max-w-[180px]">
+                            <p class="font-bold text-gray-800 truncate">${t.descricao}</p>
+                            <p class="text-[10px] text-gray-400 truncate">${t.categoria} • <span class="text-blue-600 font-medium">${t.contaNome}</span></p>
                         </div>
                     </div>
                     <div class="text-right flex items-center space-x-2">
@@ -378,9 +449,8 @@
             });
         }
 
-        function atualizarGrafico() {
+        function actualizarGrafico() {
             const categoriasGastos = {};
-            
             transacoes.forEach(t => {
                 if(t.tipo === 'despesa' && t.categoria !== 'Reserva' && t.categoria !== 'Projetos') {
                     categoriasGastos[t.categoria] = (categoriasGastos[t.categoria] || 0) + t.valor;
@@ -391,7 +461,6 @@
             const dados = Object.values(categoriasGastos);
 
             if (meuGrafico) { meuGrafico.destroy(); }
-
             const ctx = document.getElementById('graficoGastos').getContext('2d');
             if(labels.length === 0) { ctx.clearRect(0, 0, 100, 100); return; }
 
@@ -401,15 +470,13 @@
                     labels: labels,
                     datasets: [{
                         data: dados,
-                        backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7', '#ec4899', '#14b8a6'],
+                        backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7', '#ec4899', '#14b8a6', '#slate-500'],
                         borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } }
-                    }
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 10 } } } }
                 }
             });
         }
