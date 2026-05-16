@@ -4,19 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Controle Financeiro Integral</title>
-    <!-- Tailwind CSS para um design lindo e responsivo -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Chart.js para os gráficos interativos -->
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- FontAwesome para ícones amigáveis no celular -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-gray-100 text-gray-800 font-sans pb-12">
 
     <!-- Header Principal -->
-    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-50">
+    <header class="bg-blue-600 text-white p-4 shadow-md sticky top-0 z-40">
         <div class="max-w-md mx-auto flex justify-between items-center">
-            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro v4.1</h1>
+            <h1 class="text-xl font-bold"><i class="fa-solid fa-wallet mr-2"></i>Finanças Pro v5</h1>
             <span id="data-atual" class="text-sm opacity-80"></span>
         </div>
     </header>
@@ -25,31 +25,30 @@
 
         <!-- CARD DE SALDO GERAL -->
         <section class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-            <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Patrimônio Total (Onde está seu dinheiro)</p>
+            <p class="text-gray-500 text-sm font-medium uppercase tracking-wider">Patrimônio Total</p>
             <h2 id="saldo-total" class="text-3xl font-black text-gray-900 mt-1">R$ 0,00</h2>
             
             <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-100">
                 <div>
-                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Total Entradas</p>
+                    <p class="text-xs text-green-600 font-bold"><i class="fa-solid fa-arrow-up mr-1"></i> Entradas</p>
                     <p id="total-receitas" class="text-base font-bold text-green-600">R$ 0,00</p>
                 </div>
                 <div>
-                    <p class="text-xs text-red-500 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Total Saídas</p>
+                    <p class="text-xs text-red-500 font-bold"><i class="fa-solid fa-arrow-down mr-1"></i> Saídas</p>
                     <p id="total-despesas" class="text-base font-bold text-red-500">R$ 0,00</p>
                 </div>
             </div>
         </section>
 
-        <!-- SEÇÃO: ONDE ESTÁ SEU DINHEIRO (Saldos por Conta/Banco) -->
+        <!-- SEÇÃO: ONDE ESTÁ SEU DINHEIRO -->
         <section class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-md font-bold text-gray-900"><i class="fa-solid fa-building-columns mr-2 text-blue-600"></i>Saldos por Conta / Banco</h3>
+                <h3 class="text-md font-bold text-gray-900"><i class="fa-solid fa-building-columns mr-2 text-blue-600"></i>Saldos por Conta</h3>
                 <button onclick="toggleFormConta()" class="text-xs bg-blue-100 text-blue-600 font-bold px-2.5 py-1.5 rounded-lg hover:bg-blue-200">
                     <i class="fa-solid fa-plus"></i> Novo Banco
                 </button>
             </div>
 
-            <!-- Form para Adicionar Novo Banco -->
             <form id="form-conta" class="hidden bg-gray-50 p-3 rounded-xl mb-4 space-y-3 border border-gray-200">
                 <div class="grid grid-cols-2 gap-2">
                     <input type="text" id="conta-nome" placeholder="Ex: Inter, Sicredi" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
@@ -58,20 +57,17 @@
                 <button type="submit" class="w-full bg-blue-600 text-white font-bold text-xs py-2 rounded-lg">Cadastrar Conta</button>
             </form>
 
-            <!-- Lista de Bancos/Contas com os valores calculados -->
-            <div id="lista-contas" class="grid grid-cols-2 gap-2">
-                <!-- Inserido dinamicamente via JS -->
-            </div>
+            <div id="lista-contas" class="grid grid-cols-2 gap-2"></div>
         </section>
 
         <!-- SUB-CAIXAS / RESERVAS -->
         <section class="grid grid-cols-2 gap-3">
             <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
-                <p class="text-xs text-amber-800 font-bold"><i class="fa-solid fa-shield-halved mr-1"></i> Reserva Emergência</p>
+                <p class="text-xs text-amber-800 font-bold"><i class="fa-solid fa-shield-halved mr-1"></i> Reserva</p>
                 <p id="caixa-reserva" class="text-md font-black text-amber-900 mt-1">R$ 0,00</p>
             </div>
             <div class="bg-indigo-50 border border-indigo-200 p-4 rounded-xl">
-                <p class="text-xs text-indigo-800 font-bold"><i class="fa-solid fa-bullseye mr-1"></i> Projetos Futuros</p>
+                <p class="text-xs text-indigo-800 font-bold"><i class="fa-solid fa-bullseye mr-1"></i> Projetos</p>
                 <p id="caixa-projetos" class="text-md font-black text-indigo-900 mt-1">R$ 0,00</p>
             </div>
         </section>
@@ -90,12 +86,10 @@
                     <input type="text" id="fixo-nome" placeholder="Ex: Aluguel" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
                     <input type="number" id="fixo-valor" step="0.01" placeholder="Valor R$" required class="p-2 bg-white border border-gray-200 rounded-lg text-sm w-full">
                 </div>
-                <button type="submit" class="w-full bg-indigo-600 text-white font-bold text-xs py-2 rounded-lg">Salvar Conta Recorrente</button>
+                <button type="submit" class="w-full bg-indigo-600 text-white font-bold text-xs py-2 rounded-lg">Salvar Conta</button>
             </form>
 
-            <div id="lista-custos-fixos" class="space-y-2">
-                <!-- Inserido via JS -->
-            </div>
+            <div id="lista-custos-fixos" class="space-y-2"></div>
             
             <div class="mt-4 p-3 bg-slate-900 text-white rounded-xl flex justify-between items-center text-xs">
                 <span>Falta pagar este mês:</span>
@@ -138,13 +132,11 @@
 
                 <div class="grid grid-cols-2 gap-2">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Categoria / Destino</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Categoria</label>
                         <select id="categoria" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
                             <option value="Mercado">Mercado</option>
                             <option value="Combustível">Combustível</option>
-                            <option value="Aluguel">Aluguel</option>
-                            <option value="Luz/Água">Luz/Água</option>
-                            <option value="Streaming/Internet">Streaming/Internet</option>
+                            <option value="Contas Fixas 📄">Contas Fixas 📄</option>
                             <option value="Lazer">Lazer</option>
                             <option value="Delivery">Delivery</option>
                             <option value="Viagem">Viagem</option>
@@ -156,9 +148,7 @@
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">Origem ou Banco</label>
-                        <select id="select-contas" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700">
-                            <!-- Inserido dinamicamente via JS -->
-                        </select>
+                        <select id="select-contas" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700"></select>
                     </div>
                 </div>
 
@@ -174,30 +164,54 @@
                 <h3 class="text-sm font-bold text-gray-700"><i class="fa-solid fa-list mr-2 text-gray-500"></i>Últimos Lançamentos</h3>
                 <button onclick="limparTudo()" class="text-xs text-red-500 font-semibold hover:underline">Limpar Dados</button>
             </div>
-            <div id="historico" class="space-y-2 max-h-60 overflow-y-auto pr-1">
-                <!-- Inserido via JS -->
-            </div>
+            <div id="historico" class="space-y-2 max-h-60 overflow-y-auto pr-1"></div>
         </section>
 
     </main>
 
+    <!-- ============================================== -->
+    <!-- MODAL DE PAGAMENTO AUTOMÁTICO DE CONTAS FIXAS  -->
+    <!-- ============================================== -->
+    <div id="modal-pagar-fixo" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all">
+            <div class="text-center mb-4">
+                <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 mb-3">
+                    <i class="fa-solid fa-money-bill-wave text-xl"></i>
+                </div>
+                <h3 class="font-black text-xl text-gray-800">Pagar Conta Fixa</h3>
+                <p class="text-sm text-gray-500 mt-1">Registrar pagamento de <strong id="modal-fixo-nome" class="text-indigo-600"></strong></p>
+                <p class="text-2xl font-black text-gray-900 mt-2" id="modal-fixo-valor"></p>
+            </div>
+            
+            <div class="mb-5">
+                <label class="block text-xs font-bold text-gray-600 mb-2">De qual banco saiu o dinheiro?</label>
+                <select id="modal-select-conta" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium text-gray-700 focus:border-indigo-500 outline-none">
+                    <!-- Preenchido via JS -->
+                </select>
+            </div>
+            
+            <div class="flex space-x-3">
+                <button onclick="fecharModalFixo()" class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200">Cancelar</button>
+                <button onclick="confirmarPagamentoFixo()" class="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Transações de exemplo e Contas de exemplo padrão
         let transacoes = JSON.parse(localStorage.getItem('transacoes')) || [];
         let contasBancarias = JSON.parse(localStorage.getItem('contasBancarias')) || [
-            { id: 'din', nome: '💵 Dinheiro em Espécie', saldoInicial: 0 },
-            { id: 'nub', nome: '💳 Nubank', saldoInicial: 0 },
-            { id: 'bb', nome: '🏦 Banco do Brasil', saldoInicial: 0 }
+            { id: 'din', nome: '💵 Dinheiro em Espécie', saldoInicial: 0 }
         ];
         
         let custosFixos = JSON.parse(localStorage.getItem('custosFixos')) || [
-            { id: 1, nome: 'Aluguel', valor: 0, paga: false },
-            { id: 2, nome: 'Luz / Água', valor: 0, paga: false },
-            { id: 3, nome: 'Internet', valor: 0, paga: false }
+            { id: 1, nome: 'Aluguel', valor: 0, paga: false, transacaoId: null },
+            { id: 2, nome: 'Luz / Água', valor: 0, paga: false, transacaoId: null },
+            { id: 3, nome: 'Internet', valor: 0, paga: false, transacaoId: null }
         ];
         
         let tipoAtual = 'despesa';
         let meuGrafico = null;
+        let idContaFixaSelecionada = null; // Guarda o ID da conta fixa que estamos tentando pagar
 
         document.getElementById('data-atual').innerText = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'short' });
 
@@ -225,22 +239,92 @@
             atualizarGrafico();
         }
 
-        // Adicionar Novo Banco
+        // ==========================================
+        // LÓGICA DO PAGAMENTO DE CONTAS FIXAS
+        // ==========================================
+        function clicarPagarFixo(id) {
+            const contaFixo = custosFixos.find(c => c.id === id);
+
+            // SE A CONTA JÁ ESTÁ PAGA (O usuário quer desmarcar/desfazer)
+            if(contaFixo.paga) {
+                contaFixo.paga = false;
+                
+                // Se tivermos salvo o ID da transação que pagou ela, nós apagamos a transação para o dinheiro voltar
+                if(contaFixo.transacaoId) {
+                    transacoes = transacoes.filter(t => t.id !== contaFixo.transacaoId);
+                    contaFixo.transacaoId = null;
+                }
+                salvarEAtualizar();
+                return;
+            }
+
+            // SE A CONTA NÃO ESTÁ PAGA (Abrir o Modal)
+            idContaFixaSelecionada = id;
+            document.getElementById('modal-fixo-nome').innerText = contaFixo.nome;
+            document.getElementById('modal-fixo-valor').innerText = formatarMoeda(contaFixo.valor);
+            
+            // Preenche os bancos disponíveis no modal
+            const selectModal = document.getElementById('modal-select-conta');
+            selectModal.innerHTML = '';
+            contasBancarias.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                opt.innerText = c.nome;
+                selectModal.appendChild(opt);
+            });
+
+            document.getElementById('modal-pagar-fixo').classList.remove('hidden');
+        }
+
+        function fecharModalFixo() {
+            document.getElementById('modal-pagar-fixo').classList.add('hidden');
+            idContaFixaSelecionada = null;
+        }
+
+        function confirmarPagamentoFixo() {
+            if(!idContaFixaSelecionada) return;
+
+            const contaFixo = custosFixos.find(c => c.id === idContaFixaSelecionada);
+            const bancoSelecionadoId = document.getElementById('modal-select-conta').value;
+            const bancoObjeto = contasBancarias.find(b => b.id === bancoSelecionadoId);
+
+            const novoIdTransacao = Date.now();
+
+            // 1. Atualiza o status da conta fixa
+            contaFixo.paga = true;
+            contaFixo.transacaoId = novoIdTransacao; // Salva o vínculo para poder desfazer depois!
+
+            // 2. Cria o lançamento no histórico automaticamente
+            transacoes.unshift({
+                id: novoIdTransacao,
+                tipo: 'despesa',
+                valor: contaFixo.valor,
+                descricao: `Pgto Fixo: ${contaFixo.nome}`,
+                categoria: 'Contas Fixas 📄',
+                contaId: bancoObjeto.id,
+                contaNome: bancoObjeto.nome,
+                data: new Date().toLocaleDateString('pt-BR')
+            });
+
+            fecharModalFixo();
+            salvarEAtualizar();
+        }
+
+        // ==========================================
+        // OUTRAS FUNÇÕES DE CADASTRO
+        // ==========================================
         document.getElementById('form-conta').addEventListener('submit', function(e) {
             e.preventDefault();
             const nome = document.getElementById('conta-nome').value;
             const saldoInicial = parseFloat(document.getElementById('conta-inicial').value) || 0;
-            
             contasBancarias.push({ id: 'bc-' + Date.now(), nome, saldoInicial });
             localStorage.setItem('contasBancarias', JSON.stringify(contasBancarias));
-            
             document.getElementById('conta-nome').value = '';
             document.getElementById('conta-inicial').value = '';
             toggleFormConta();
             salvarEAtualizar();
         });
 
-        // Deletar QUALQUER Banco
         function deletarConta(id) {
             if(confirm("Deseja mesmo remover esse banco?")) {
                 contasBancarias = contasBancarias.filter(c => c.id !== id);
@@ -249,12 +333,11 @@
             }
         }
 
-        // Adicionar Custo Fixo
         document.getElementById('form-custo-fixo').addEventListener('submit', function(e) {
             e.preventDefault();
             const nome = document.getElementById('fixo-nome').value;
             const valor = parseFloat(document.getElementById('fixo-valor').value);
-            custosFixos.push({ id: Date.now(), nome, valor, paga: false });
+            custosFixos.push({ id: Date.now(), nome, valor, paga: false, transacaoId: null });
             localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
             document.getElementById('fixo-nome').value = '';
             document.getElementById('fixo-valor').value = '';
@@ -266,13 +349,7 @@
             const valorNum = parseFloat(novoValor) || 0;
             custosFixos = custosFixos.map(item => item.id === id ? { ...item, valor: valorNum } : item);
             localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
-            calcularFinancas();
-        }
-
-        function togglePagaFixo(id) {
-            custosFixos = custosFixos.map(item => item.id === id ? { ...item, paga: !item.paga } : item);
-            localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
-            salvarEAtualizar();
+            calcularFinancas(); // Atualiza sem recriar os botões se tiver editando
         }
 
         function deletarFixo(id) {
@@ -281,7 +358,6 @@
             salvarEAtualizar();
         }
 
-        // Lançar Movimentação
         document.getElementById('form-transacao').addEventListener('submit', function(e) {
             e.preventDefault();
             const valor = parseFloat(document.getElementById('valor').value);
@@ -303,12 +379,24 @@
 
         function deletarTransacao(id) {
             transacoes = transacoes.filter(t => t.id !== id);
+            
+            // Se o usuário apagar pelo histórico uma despesa que era de Custo Fixo, vamos desmarcar a conta fixa
+            custosFixos.forEach(f => {
+                if(f.transacaoId === id) {
+                    f.paga = false;
+                    f.transacaoId = null;
+                }
+            });
+            localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
             salvarEAtualizar();
         }
 
         function limparTudo() {
-            if(confirm("Apagar todo o histórico?")) {
+            if(confirm("Apagar todo o histórico de lançamentos?")) {
                 transacoes = [];
+                // Reseta os status de pago das contas fixas
+                custosFixos.forEach(f => { f.paga = false; f.transacaoId = null; });
+                localStorage.setItem('custosFixos', JSON.stringify(custosFixos));
                 salvarEAtualizar();
             }
         }
@@ -317,15 +405,14 @@
             return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
         }
 
-        // CÁLCULO PRINCIPAL
+        // ==========================================
+        // CÁLCULOS E RENDERIZAÇÃO
+        // ==========================================
         function calcularFinancas() {
             let receitas = 0, despesas = 0, reserva = 0, projetos = 0;
-            
-            // Mapeia os saldos atuais baseados no saldo inicial dos bancos
             let saldosBancos = {};
-            contasBancarias.forEach(c => {
-                saldosBancos[c.id] = c.saldoInicial;
-            });
+            
+            contasBancarias.forEach(c => { saldosBancos[c.id] = c.saldoInicial; });
 
             transacoes.forEach(t => {
                 if(t.tipo === 'receita') {
@@ -362,17 +449,12 @@
         function renderizarPainelBancos(saldosCalculados) {
             const container = document.getElementById('lista-contas');
             container.innerHTML = '';
-
             contasBancarias.forEach(c => {
                 const saldoAtual = saldosCalculados[c.id] || 0;
                 const div = document.createElement('div');
                 div.className = "bg-gray-50 border border-gray-200 p-3 rounded-xl flex flex-col justify-between relative group";
-                
-                // Botão de deletar liberado para TODOS os bancos!
-                const btnDeletar = `<button onclick="deletarConta('${c.id}')" class="absolute top-1 right-2 text-gray-300 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>`;
-
                 div.innerHTML = `
-                    ${btnDeletar}
+                    <button onclick="deletarConta('${c.id}')" class="absolute top-1 right-2 text-gray-300 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button>
                     <span class="text-[11px] font-bold text-gray-600 truncate pr-4">${c.nome}</span>
                     <span class="text-sm font-black text-gray-900 mt-1">${formatarMoeda(saldoAtual)}</span>
                 `;
@@ -384,7 +466,6 @@
             const select = document.getElementById('select-contas');
             const valorSelecionadoAntes = select.value;
             select.innerHTML = '';
-            
             contasBancarias.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.id;
@@ -397,17 +478,15 @@
         function renderizarCustosFixos() {
             const container = document.getElementById('lista-custos-fixos');
             container.innerHTML = '';
-
             custosFixos.forEach(f => {
                 const div = document.createElement('div');
-                div.className = `flex items-center justify-between p-3 rounded-xl border ${f.paga ? 'bg-gray-50 border-gray-200 opacity-60' : 'bg-white border-indigo-100 shadow-xs'}`;
-                
+                div.className = `flex items-center justify-between p-3 rounded-xl border ${f.paga ? 'bg-indigo-50 border-indigo-200 opacity-70' : 'bg-white border-indigo-100 shadow-xs'}`;
                 div.innerHTML = `
                     <div class="flex items-center space-x-2.5">
-                        <button onclick="togglePagaFixo(${f.id})" class="text-lg ${f.paga ? 'text-green-500' : 'text-gray-300 hover:text-indigo-500'}">
+                        <button onclick="clicarPagarFixo(${f.id})" class="text-xl transition-all ${f.paga ? 'text-indigo-600 hover:text-indigo-800' : 'text-gray-300 hover:text-indigo-500'}">
                             <i class="${f.paga ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'}"></i>
                         </button>
-                        <span class="text-xs font-bold ${f.paga ? 'line-through text-gray-400' : 'text-gray-700'}">${f.nome}</span>
+                        <span class="text-xs font-bold ${f.paga ? 'line-through text-indigo-800/60' : 'text-gray-700'}">${f.nome}</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="text-[10px] text-gray-400">R$</span>
@@ -424,12 +503,10 @@
         function renderizarHistorico() {
             const container = document.getElementById('historico');
             container.innerHTML = '';
-
             if(transacoes.length === 0) {
                 container.innerHTML = `<p class="text-center text-gray-400 text-xs py-4">Nenhum lançamento.</p>`;
                 return;
             }
-
             transacoes.forEach(t => {
                 const isDespesa = t.tipo === 'despesa';
                 const div = document.createElement('div');
@@ -476,7 +553,7 @@
                     labels: labels,
                     datasets: [{
                         data: dados,
-                        backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7', '#ec4899', '#14b8a6', '#slate-500'],
+                        backgroundColor: ['#ef4444', '#f97316', '#f59e0b', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#a855f7', '#ec4899', '#14b8a6', '#64748b'],
                         borderWidth: 2
                     }]
                 },
