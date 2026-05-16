@@ -55,14 +55,18 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-2 gap-3">
-            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-4 rounded-2xl shadow-sm">
-                <p class="text-[11px] text-amber-800 font-bold uppercase tracking-wider"><i class="fa-solid fa-shield-halved mr-1"></i> Reserva</p>
-                <p id="caixa-reserva" class="text-lg font-black text-amber-900 mt-1">R$ 0,00</p>
+        <section class="grid grid-cols-3 gap-2">
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-100 p-3 rounded-2xl shadow-sm text-center sm:text-left">
+                <p class="text-[9px] text-amber-800 font-bold uppercase tracking-wider truncate"><i class="fa-solid fa-shield-halved mr-1"></i>Reserva</p>
+                <p id="caixa-reserva" class="text-sm font-black text-amber-900 mt-1 truncate">R$ 0,00</p>
             </div>
-            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-4 rounded-2xl shadow-sm">
-                <p class="text-[11px] text-indigo-800 font-bold uppercase tracking-wider"><i class="fa-solid fa-bullseye mr-1"></i> Projetos</p>
-                <p id="caixa-projetos" class="text-lg font-black text-indigo-900 mt-1">R$ 0,00</p>
+            <div class="bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100 p-3 rounded-2xl shadow-sm text-center sm:text-left">
+                <p class="text-[9px] text-indigo-800 font-bold uppercase tracking-wider truncate"><i class="fa-solid fa-bullseye mr-1"></i>Projetos</p>
+                <p id="caixa-projetos" class="text-sm font-black text-indigo-900 mt-1 truncate">R$ 0,00</p>
+            </div>
+            <div class="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-100 p-3 rounded-2xl shadow-sm text-center sm:text-left">
+                <p class="text-[9px] text-emerald-800 font-bold uppercase tracking-wider truncate"><i class="fa-solid fa-chart-line mr-1"></i>Invest.</p>
+                <p id="caixa-investimentos" class="text-sm font-black text-emerald-900 mt-1 truncate">R$ 0,00</p>
             </div>
         </section>
 
@@ -95,14 +99,14 @@
                     <button type="button" id="btn-transferencia" onclick="setTipo('transferencia')" class="py-2.5 rounded-xl font-bold text-[11px] uppercase tracking-wider text-gray-500 hover:bg-white transition-all">Transf.</button>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="col-span-1">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
                         <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Data</label>
                         <input type="date" id="data-lancamento" required class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-blue-500 transition-colors">
                     </div>
-                    <div class="col-span-2">
+                    <div>
                         <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Valor (R$)</label>
-                        <input type="number" id="valor" step="0.01" required placeholder="0,00" class="w-full p-2.5 bg-gray-50 border border-gray-200 rounded-xl text-lg font-black outline-none focus:border-blue-500 transition-colors">
+                        <input type="number" id="valor" step="0.01" required placeholder="0,00" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-base font-black outline-none focus:border-blue-500 transition-colors">
                     </div>
                 </div>
 
@@ -212,6 +216,12 @@
             <p class="text-xs font-medium text-gray-500">Seus resultados e métricas</p>
         </div>
 
+        <section class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
+            <h3 class="text-sm font-black text-gray-800 uppercase tracking-wide mb-4"><i class="fa-solid fa-sack-dollar mr-2 text-green-500"></i>Posição do Patrimônio</h3>
+            <div id="dash-patrimonio-lista" class="space-y-3">
+                </div>
+        </section>
+
         <section class="grid grid-cols-2 gap-3">
             <div class="bg-gray-900 text-white p-4 rounded-3xl shadow-lg relative overflow-hidden">
                 <i class="fa-solid fa-trophy absolute -right-2 -bottom-2 text-6xl text-white opacity-10"></i>
@@ -248,8 +258,14 @@
                 </div>
             </div>
 
-            <div class="w-full max-w-[260px] mx-auto relative">
+            <div class="w-full max-w-[260px] mx-auto relative mt-4">
                 <canvas id="graficoGastos"></canvas>
+            </div>
+
+            <div class="mt-6 pt-5 border-t border-gray-100">
+                <h4 class="text-xs font-black text-gray-500 uppercase tracking-wider mb-4"><i class="fa-solid fa-list mr-1"></i> Detalhamento de Saídas</h4>
+                <div id="dash-lista-categorias" class="space-y-3">
+                    </div>
             </div>
         </section>
 
@@ -297,9 +313,6 @@
     </style>
 
     <script>
-        // =========================================================
-        // 1. MANIFESTO PWA
-        // =========================================================
         const APP_LOGO_URL = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"; 
         const manifestData = { 
             "name": "Finanças Leandro", 
@@ -313,9 +326,6 @@
         const blob = new Blob([JSON.stringify(manifestData)], {type: 'application/json'});
         document.getElementById('manifest-link').href = URL.createObjectURL(blob);
 
-        // =========================================================
-        // 2. FIREBASE CONFIG
-        // =========================================================
         const firebaseConfig = {
           apiKey: "AIzaSyAclpZDg2ln1eOQ9XR776-Mt_GH38Ea-xE",
           authDomain: "financas-aed9f.firebaseapp.com",
@@ -326,9 +336,6 @@
           appId: "1:289595891442:web:91b0564c0fdbc2e751fa6b"
         };
 
-        // =========================================================
-        // 3. VARIÁVEIS GLOBAIS DE DATA E ESTADO
-        // =========================================================
         const mesesNomes = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
         const dataHoje = new Date();
         const mesAtualStr = dataHoje.getMonth() + '-' + dataHoje.getFullYear();
@@ -347,9 +354,10 @@
         let db = null; 
         let firebaseAtivo = false;
 
-        // =========================================================
-        // 4. SISTEMA DE NAVEGAÇÃO ENTRE ABAS
-        // =========================================================
+        // Variaveis globais de saldo para o Dashboard ler
+        let totalReserva = 0, totalProjetos = 0, totalInvestimentos = 0;
+        let saldosBancosGlobais = {};
+
         function mudarAba(aba) {
             const vHome = document.getElementById('view-home'); 
             const vDash = document.getElementById('view-dash');
@@ -369,16 +377,10 @@
             }
         }
 
-        // =========================================================
-        // 5. BANCO DE DADOS (FORÇANDO APP ZERADO!)
-        // =========================================================
         async function iniciarFirebase() {
-            // MUDANÇA PRINCIPAL AQUI: Mudamos a "chave" para v9.
-            // Isso ignora qualquer lixo que tenha ficado salvo nas versões antigas
             carregarDadosLocais(); 
             atualizarInterfaceGlobal(); 
             
-            // Remove a tela azul na hora
             document.getElementById('loading').style.opacity = '0';
             setTimeout(() => document.getElementById('loading').classList.add('hidden'), 500);
 
@@ -387,7 +389,6 @@
                 db = firebase.firestore(); 
                 firebaseAtivo = true;
                 
-                // Salvando num documento NOVO na nuvem para começar 100% zerado
                 const docRef = db.collection('app_financas').doc('meus_dados_v9');
                 const docSnap = await docRef.get();
                 
@@ -407,14 +408,12 @@
         }
 
         function carregarDadosLocais() {
-            // Lendo de uma chave v9 nova. Se não tiver nada, começa vazio mesmo.
             transacoes = JSON.parse(localStorage.getItem('transacoes_v9')) || [];
             if(localStorage.getItem('contasBancarias_v9')) contasBancarias = JSON.parse(localStorage.getItem('contasBancarias_v9'));
             contasPagar = JSON.parse(localStorage.getItem('contasPagar_v9')) || [];
         }
 
         function salvarEAtualizar() {
-            // Salvando na chave v9
             localStorage.setItem('transacoes_v9', JSON.stringify(transacoes)); 
             localStorage.setItem('contasBancarias_v9', JSON.stringify(contasBancarias)); 
             localStorage.setItem('contasPagar_v9', JSON.stringify(contasPagar));
@@ -423,7 +422,6 @@
                 document.getElementById('icone-nuvem').classList.replace('fa-cloud', 'fa-arrows-rotate'); 
                 document.getElementById('icone-nuvem').classList.add('fa-spin');
                 
-                // Salvando no arquivo v9 novo na nuvem
                 db.collection('app_financas').doc('meus_dados_v9').set({ transacoes, contasBancarias, contasPagar })
                 .then(() => {
                     setTimeout(() => { 
@@ -442,9 +440,6 @@
             renderizarDashboard(); 
         }
 
-        // =========================================================
-        // 6. FUNÇÕES DE DATA
-        // =========================================================
         function getMesAnoDaTransacao(tData) {
             if (!tData) return mesAtualStr;
             if(tData.includes('/')) {
@@ -465,9 +460,6 @@
             return tData.substring(0, 5); 
         }
 
-        // =========================================================
-        // 7. CONTROLES DO FORMULÁRIO 
-        // =========================================================
         function toggleFormContaPagar() { document.getElementById('form-conta-pagar').classList.toggle('hidden'); }
         function toggleFormConta() { document.getElementById('form-conta').classList.toggle('hidden'); }
         
@@ -502,11 +494,8 @@
             }
         }
 
-        // =========================================================
-        // 8. O MOTOR DO APLICATIVO
-        // =========================================================
         function calcularFinancas() {
-            let receitasMes = 0, despesasMes = 0, reserva = 0, projetos = 0;
+            let receitasMes = 0, despesasMes = 0, reserva = 0, projetos = 0, investimentos = 0;
             let saldosBancos = {};
             
             contasBancarias.forEach(c => { saldosBancos[c.id] = c.saldoInicial; });
@@ -517,22 +506,30 @@
                 const isEsteMes = mesTransacao === mesAtualStr || mesTransacao === `${dataHoje.getMonth()}-${dataHoje.getFullYear()}`; 
 
                 if(t.tipo === 'receita') {
-                    if(isEsteMes && t.contaId !== 'reserva' && t.contaId !== 'projetos') receitasMes += valorTransacao;
+                    if(isEsteMes && t.contaId !== 'reserva' && t.contaId !== 'projetos' && t.contaId !== 'investimentos') receitasMes += valorTransacao;
+                    
                     if(t.contaId === 'reserva') reserva += valorTransacao; 
                     else if(t.contaId === 'projetos') projetos += valorTransacao; 
+                    else if(t.contaId === 'investimentos') investimentos += valorTransacao;
                     else if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] += valorTransacao;
+                    
                 } else if(t.tipo === 'despesa') {
-                    if(isEsteMes && t.contaId !== 'reserva' && t.contaId !== 'projetos') despesasMes += valorTransacao;
+                    if(isEsteMes && t.contaId !== 'reserva' && t.contaId !== 'projetos' && t.contaId !== 'investimentos') despesasMes += valorTransacao;
+                    
                     if(t.contaId === 'reserva') reserva -= valorTransacao; 
                     else if(t.contaId === 'projetos') projetos -= valorTransacao; 
+                    else if(t.contaId === 'investimentos') investimentos -= valorTransacao;
                     else if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] -= valorTransacao;
+                    
                 } else if(t.tipo === 'transferencia') {
                     if(t.contaOrigem === 'reserva') reserva -= valorTransacao; 
                     else if(t.contaOrigem === 'projetos') projetos -= valorTransacao; 
+                    else if(t.contaOrigem === 'investimentos') investimentos -= valorTransacao;
                     else if(saldosBancos[t.contaOrigem] !== undefined) saldosBancos[t.contaOrigem] -= valorTransacao;
                     
                     if(t.contaId === 'reserva') reserva += valorTransacao; 
                     else if(t.contaId === 'projetos') projetos += valorTransacao; 
+                    else if(t.contaId === 'investimentos') investimentos += valorTransacao;
                     else if(saldosBancos[t.contaId] !== undefined) saldosBancos[t.contaId] += valorTransacao;
                 }
             });
@@ -544,6 +541,13 @@
             
             document.getElementById('caixa-reserva').innerText = formatarMoeda(reserva);
             document.getElementById('caixa-projetos').innerText = formatarMoeda(projetos);
+            document.getElementById('caixa-investimentos').innerText = formatarMoeda(investimentos);
+
+            // Passando para as globais pro dash poder usar
+            totalReserva = reserva;
+            totalProjetos = projetos;
+            totalInvestimentos = investimentos;
+            saldosBancosGlobais = saldosBancos;
 
             renderizarPainelBancos(saldosBancos);
             atualizarSelectBancos();
@@ -554,13 +558,11 @@
         function obterNomeConta(id) { 
             if(id === 'reserva') return '🛡️ Reserva'; 
             if(id === 'projetos') return '🎯 Projetos'; 
+            if(id === 'investimentos') return '📈 Investimentos'; 
             const bancoFind = contasBancarias.find(c => c.id === id); 
             return bancoFind ? bancoFind.nome : 'Sem Banco'; 
         }
 
-        // =========================================================
-        // 9. LANÇAMENTOS E DELETES
-        // =========================================================
         document.getElementById('form-transacao').addEventListener('submit', function(e) {
             e.preventDefault();
             const valorLancado = parseFloat(document.getElementById('valor').value); 
@@ -612,9 +614,6 @@
             salvarEAtualizar();
         }
 
-        // =========================================================
-        // 10. BAIXAR CONTAS DA AGENDA
-        // =========================================================
         function clicarPagarFixo(id) {
             const conta = contasPagar.find(c => c.id === id);
             if(conta.statusMes === mesAtualStr) {
@@ -637,14 +636,15 @@
             fecharModalFixo(); salvarEAtualizar();
         }
 
-        // =========================================================
-        // 11. DESENHAR A INTERFACE
-        // =========================================================
         function atualizarSelectBancos() {
             const selects = [document.getElementById('select-contas'), document.getElementById('select-origem'), document.getElementById('modal-select-conta')];
             let optionsHTML = ''; 
             contasBancarias.forEach(c => optionsHTML += `<option value="${c.id}">${c.nome}</option>`);
-            optionsHTML += `<option value="reserva" class="font-bold text-amber-700">🛡️ Reserva Emergência</option><option value="projetos" class="font-bold text-indigo-700">🎯 Caixa Projetos</option>`;
+            
+            optionsHTML += `<option value="reserva" class="font-bold text-amber-700">🛡️ Reserva Emergência</option>
+                            <option value="projetos" class="font-bold text-indigo-700">🎯 Caixa Projetos</option>
+                            <option value="investimentos" class="font-bold text-emerald-700">📈 Investimentos</option>`;
+                            
             selects.forEach(sel => { if(sel) { const valAnterior = sel.value; sel.innerHTML = optionsHTML; if(valAnterior) sel.value = valAnterior; } });
         }
 
@@ -718,13 +718,42 @@
         }
 
         // =========================================================
-        // 12. TELA DO DASHBOARD
+        // DASHBOARD - CÓDIGO MELHORADO COM RAIO-X
         // =========================================================
         function renderizarDashboard() {
             if(document.getElementById('view-dash').classList.contains('hidden')) return;
 
+            // 1. CARREGAR PATRIMÔNIO ATUAL NA TELA
+            let htmlPatrimonio = '';
+            contasBancarias.forEach(c => {
+                let icone = c.id === 'din' ? 'fa-money-bill-wave text-emerald-500' : 'fa-building-columns text-blue-500';
+                htmlPatrimonio += `
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+                        <span class="text-xs font-bold text-gray-600"><i class="fa-solid ${icone} w-5 text-center mr-1"></i> ${c.nome}</span>
+                        <span class="text-sm font-black text-gray-900">${formatarMoeda(saldosBancosGlobais[c.id] || 0)}</span>
+                    </div>
+                `;
+            });
+            htmlPatrimonio += `
+                <div class="flex justify-between items-center border-b border-gray-50 pb-2 pt-1">
+                    <span class="text-xs font-bold text-gray-600"><i class="fa-solid fa-shield-halved text-amber-500 w-5 text-center mr-1"></i> Reserva de Emergência</span>
+                    <span class="text-sm font-black text-amber-600">${formatarMoeda(totalReserva)}</span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-50 pb-2 pt-1">
+                    <span class="text-xs font-bold text-gray-600"><i class="fa-solid fa-bullseye text-indigo-500 w-5 text-center mr-1"></i> Projetos Futuros</span>
+                    <span class="text-sm font-black text-indigo-600">${formatarMoeda(totalProjetos)}</span>
+                </div>
+                <div class="flex justify-between items-center pt-1">
+                    <span class="text-xs font-bold text-gray-600"><i class="fa-solid fa-chart-line text-emerald-500 w-5 text-center mr-1"></i> Investimentos</span>
+                    <span class="text-sm font-black text-emerald-600">${formatarMoeda(totalInvestimentos)}</span>
+                </div>
+            `;
+            document.getElementById('dash-patrimonio-lista').innerHTML = htmlPatrimonio;
+
+            // 2. LÓGICA DO MÊS ESPECÍFICO
             let resumoMensal = {};
             let optionsFiltro = new Set();
+            let transacoesDoMesDetalhes = {}; // Para guardar o Raio-X
 
             transacoes.forEach(t => {
                 const mesA = getMesAnoDaTransacao(t.data); 
@@ -738,8 +767,8 @@
                 
                 if(!resumoMensal[keyVisivel]) resumoMensal[keyVisivel] = { rec: 0, desp: 0, keyReal: mesA };
                 
-                if(t.tipo === 'receita' && t.contaId !== 'reserva' && t.contaId !== 'projetos') resumoMensal[keyVisivel].rec += t.valor;
-                if(t.tipo === 'despesa' && t.contaId !== 'reserva' && t.contaId !== 'projetos') resumoMensal[keyVisivel].desp += t.valor;
+                if(t.tipo === 'receita' && t.contaId !== 'reserva' && t.contaId !== 'projetos' && t.contaId !== 'investimentos') resumoMensal[keyVisivel].rec += t.valor;
+                if(t.tipo === 'despesa' && t.contaId !== 'reserva' && t.contaId !== 'projetos' && t.contaId !== 'investimentos') resumoMensal[keyVisivel].desp += t.valor;
                 
                 optionsFiltro.add(keyVisivel);
             });
@@ -750,62 +779,100 @@
             const selectFiltro = document.getElementById('filtro-mes');
             const valorSelecionado = selectFiltro.value || atualVisivel;
             selectFiltro.innerHTML = '';
-            Array.from(optionsFiltro).sort().reverse().forEach(mes => {
-                selectFiltro.innerHTML += `<option value="${mes}">${mes}</option>`;
-            });
+            Array.from(optionsFiltro).sort().reverse().forEach(mes => { selectFiltro.innerHTML += `<option value="${mes}">${mes}</option>`; });
             if(Array.from(optionsFiltro).includes(valorSelecionado)) selectFiltro.value = valorSelecionado;
 
+            const mesFiltrado = selectFiltro.value;
+
+            // Insigths
             let maxGasto = 0; let mesMaxGasto = "---";
             let maxSobra = 0; let mesMaxSobra = "---";
-
             for(let mes in resumoMensal) {
                 const gasto = resumoMensal[mes].desp;
                 const sobra = resumoMensal[mes].rec - resumoMensal[mes].desp;
-                
                 if(gasto > maxGasto) { maxGasto = gasto; mesMaxGasto = mes; }
                 if(sobra > maxSobra) { maxSobra = sobra; mesMaxSobra = mes; }
             }
-
             document.getElementById('insight-pior-mes').innerText = mesMaxGasto;
             document.getElementById('insight-pior-valor').innerText = formatarMoeda(maxGasto);
             document.getElementById('insight-melhor-mes').innerText = mesMaxSobra;
             document.getElementById('insight-melhor-valor').innerText = maxSobra > 0 ? `+ ${formatarMoeda(maxSobra)}` : "Sem sobras";
 
-            const mesFiltrado = selectFiltro.value;
+            // Resumo topo (receitas/despesas/sobra)
             const dadosMes = resumoMensal[mesFiltrado] || { rec: 0, desp: 0 };
-            
             document.getElementById('dash-mes-rec').innerText = formatarMoeda(dadosMes.rec);
             document.getElementById('dash-mes-desp').innerText = formatarMoeda(dadosMes.desp);
             document.getElementById('dash-mes-sobra').innerText = formatarMoeda(dadosMes.rec - dadosMes.desp);
 
+            // Gráfico e Lista Raio-X
             const categoriasGrafico = {}; 
             transacoes.forEach(t => { 
                 const mesA = getMesAnoDaTransacao(t.data); 
                 let keyVisivel = "";
                 if(mesA.includes('-')) {
                     const parts = mesA.split('-');
-                    const idxMes = parseInt(parts[0]);
-                    keyVisivel = `${mesesNomes[idxMes]} ${parts[1]}`;
+                    keyVisivel = `${mesesNomes[parseInt(parts[0])]} ${parts[1]}`;
                 }
                 
                 if(t.tipo === 'despesa' && keyVisivel === mesFiltrado) {
                     categoriasGrafico[t.categoria] = (categoriasGrafico[t.categoria] || 0) + t.valor; 
+                    
+                    if(!transacoesDoMesDetalhes[t.categoria]) transacoesDoMesDetalhes[t.categoria] = [];
+                    transacoesDoMesDetalhes[t.categoria].push(t);
                 }
             });
             
-            const labelsGrafico = Object.keys(categoriasGrafico);
-            const dadosGrafico = Object.values(categoriasGrafico);
+            // Ordenar quem gastou mais primeiro
+            const labelsGrafico = Object.keys(categoriasGrafico).sort((a,b) => categoriasGrafico[b] - categoriasGrafico[a]);
+            const dadosGrafico = labelsGrafico.map(l => categoriasGrafico[l]);
             
             if (meuGrafico) { meuGrafico.destroy(); }
             const ctx = document.getElementById('graficoGastos').getContext('2d');
             
-            if(labelsGrafico.length === 0) { ctx.clearRect(0, 0, 100, 100); return; }
-            
-            meuGrafico = new Chart(ctx, {
-                type: 'doughnut', 
-                data: { labels: labelsGrafico, datasets: [{ data: dadosGrafico, backgroundColor: ['#ef4444','#f97316','#f59e0b','#10b981','#06b6d4','#3b82f6','#6366f1','#a855f7','#ec4899','#14b8a6','#64748b'], borderWidth: 3, hoverOffset: 4 }] },
-                options: { responsive: true, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10, weight: 'bold' } } } } }
-            });
+            let containerCat = document.getElementById('dash-lista-categorias');
+            containerCat.innerHTML = '';
+
+            if(labelsGrafico.length === 0) { 
+                ctx.clearRect(0, 0, 100, 100); 
+                containerCat.innerHTML = '<p class="text-center text-xs text-gray-400 py-4">Nenhum gasto registrado neste mês.</p>';
+            } else {
+                const bgColors = ['#ef4444','#f97316','#f59e0b','#10b981','#06b6d4','#3b82f6','#6366f1','#a855f7','#ec4899','#14b8a6','#64748b'];
+
+                meuGrafico = new Chart(ctx, {
+                    type: 'doughnut', 
+                    data: { labels: labelsGrafico, datasets: [{ data: dadosGrafico, backgroundColor: bgColors, borderWidth: 3, hoverOffset: 4 }] },
+                    options: { responsive: true, cutout: '65%', plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8, font: { size: 10, weight: 'bold' } } } } }
+                });
+
+                // Criar o Raio-X em HTML
+                labelsGrafico.forEach((cat, index) => {
+                    const valorTotal = categoriasGrafico[cat];
+                    const color = bgColors[index % bgColors.length];
+                    
+                    let htmlItens = '';
+                    // Agrupar itens com o mesmo nome exato ("Aluguel", "Luz")
+                    let itensAgrupados = {};
+                    transacoesDoMesDetalhes[cat].forEach(t => {
+                        itensAgrupados[t.descricao] = (itensAgrupados[t.descricao] || 0) + t.valor;
+                    });
+
+                    for(let desc in itensAgrupados) {
+                        htmlItens += `<div class="flex justify-between text-[11px] text-gray-500 mt-2 pl-3 border-l-2" style="border-color: ${color}60"><span class="truncate pr-2 font-medium">${desc}</span><span class="font-bold whitespace-nowrap">R$ ${itensAgrupados[desc].toFixed(2).replace('.',',')}</span></div>`;
+                    }
+
+                    containerCat.innerHTML += `
+                        <div class="bg-gray-50/50 p-3 rounded-2xl border border-gray-100 shadow-sm">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-xs font-bold text-gray-700 flex items-center"><span class="w-3 h-3 rounded-full mr-2 shadow-sm" style="background-color: ${color}"></span>${cat}</span>
+                                <span class="text-sm font-black text-gray-900">${formatarMoeda(valorTotal)}</span>
+                            </div>
+                            <div class="pt-1">
+                                ${htmlItens}
+                            </div>
+                        </div>
+                    `;
+                });
+            }
         }
 
         // =========================================================
