@@ -217,6 +217,17 @@
             }
         }
 
+        // ==========================================
+        // FUNÇÃO DE SALVAR ADICIONADA AQUI
+        // ==========================================
+        function salvarEAtualizar() {
+            localStorage.setItem('transacoes', JSON.stringify(transacoes));
+            calcularFinancas();
+            renderizarHistorico();
+            renderizarCustosFixos();
+            atualizarGrafico();
+        }
+
         // Adicionar Novo Banco
         document.getElementById('form-conta').addEventListener('submit', function(e) {
             e.preventDefault();
@@ -376,7 +387,7 @@
 
         function atualizarSelectBancos() {
             const select = document.getElementById('select-contas');
-            const valorSelecionado antes = select.value;
+            const valorSelecionadoAntes = select.value; // CORREÇÃO DE DIGITAÇÃO AQUI
             select.innerHTML = '';
             
             contasBancarias.forEach(c => {
@@ -385,7 +396,7 @@
                 opt.innerText = c.nome;
                 select.appendChild(opt);
             });
-            if(valorSelecionadoAntes) select.value = valorSelecionadoAntes;
+            if(valorSelecionadoAntes) select.value = valorSelecionadoAntes; // CORREÇÃO AQUI TAMBÉM
         }
 
         function renderizarCustosFixos() {
@@ -449,7 +460,8 @@
             });
         }
 
-        function actualizarGrafico() {
+        // CORREÇÃO DO NOME DA FUNÇÃO AQUI
+        function atualizarGrafico() {
             const categoriasGastos = {};
             transacoes.forEach(t => {
                 if(t.tipo === 'despesa' && t.categoria !== 'Reserva' && t.categoria !== 'Projetos') {
