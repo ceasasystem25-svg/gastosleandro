@@ -333,6 +333,7 @@
         </button>
     </nav>
 
+    <!-- Modal Pagar -->
     <div id="modal-pagar-fixo" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
         <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all animate-slide-up">
             <div class="text-center mb-6">
@@ -352,6 +353,113 @@
             <div class="flex space-x-3">
                 <button onclick="fecharModalFixo()" class="flex-1 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-colors">Cancelar</button>
                 <button onclick="confirmarPagamentoFixo()" class="flex-1 py-3.5 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Banco -->
+    <div id="modal-edit-conta" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all animate-slide-up">
+            <div class="text-center mb-6">
+                <h3 class="font-black text-xl text-gray-900 tracking-tight">Editar Banco</h3>
+            </div>
+            <div class="space-y-3 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Nome do Banco</label>
+                    <input type="text" id="edit-conta-nome" class="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Saldo Inicial (R$)</label>
+                    <input type="number" step="0.01" id="edit-conta-inicial" class="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-blue-500">
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="fecharEditConta()" class="flex-1 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button onclick="salvarEditConta()" class="flex-1 py-3.5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Conta a Pagar -->
+    <div id="modal-edit-pagar" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all animate-slide-up">
+            <div class="text-center mb-6">
+                <h3 class="font-black text-xl text-gray-900 tracking-tight">Editar Conta na Agenda</h3>
+            </div>
+            <div class="space-y-3 mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Nome</label>
+                    <input type="text" id="edit-pagar-nome" class="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-indigo-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Valor (R$)</label>
+                        <input type="number" step="0.01" id="edit-pagar-valor" class="p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm w-full outline-none focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-1 ml-1">Vencimento</label>
+                        <input type="date" id="edit-pagar-data" class="p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs w-full text-gray-700 outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="fecharEditPagar()" class="flex-1 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button onclick="salvarEditPagar()" class="flex-1 py-3.5 bg-indigo-600 text-white rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-colors">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Lançamento (Transação) -->
+    <div id="modal-edit-transacao" class="hidden fixed inset-0 bg-black/60 z-[60] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-sm shadow-2xl transform transition-all animate-slide-up">
+            <div class="text-center mb-6">
+                <h3 class="font-black text-xl text-gray-900 tracking-tight">Editar Lançamento</h3>
+            </div>
+            <div class="space-y-3 mb-6">
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Data</label>
+                        <input type="date" id="edit-transacao-data" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Valor (R$)</label>
+                        <input type="number" step="0.01" id="edit-transacao-valor" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-black outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Descrição</label>
+                    <input type="text" id="edit-transacao-descricao" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-medium outline-none focus:border-blue-500">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div id="edit-box-categoria">
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">Categoria</label>
+                        <select id="edit-transacao-categoria" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-600 outline-none">
+                            <option value="Mercado">🛒 Mercado</option>
+                            <option value="Combustível">⛽ Combustível</option>
+                            <option value="Contas / Parcelas">📄 Contas / Parcelas</option>
+                            <option value="Lazer">🍻 Lazer</option>
+                            <option value="Delivery">🍔 Delivery</option>
+                            <option value="Viagem">✈️ Viagem</option>
+                            <option value="Salário">💰 Salário / Entrada</option>
+                            <option value="Outros">📌 Outros</option>
+                        </select>
+                    </div>
+
+                    <div id="edit-box-origem" class="hidden">
+                        <label class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">De (Origem)</label>
+                        <select id="edit-transacao-origem" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none"></select>
+                    </div>
+
+                    <div>
+                        <label id="edit-label-conta" class="block text-[10px] font-bold text-gray-500 uppercase mb-1 ml-1">De onde saiu?</label>
+                        <select id="edit-transacao-conta" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs font-bold text-gray-700 outline-none"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="flex space-x-3">
+                <button onclick="fecharEditTransacao()" class="flex-1 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button onclick="salvarEditTransacao()" class="flex-1 py-3.5 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors">Salvar Alterações</button>
             </div>
         </div>
     </div>
@@ -401,6 +509,12 @@
         
         let tipoAtual = 'despesa';
         let idContaPagarSelecionada = null; 
+        
+        // Novas variáveis de edição
+        let idContaEditando = null;
+        let idPagarEditando = null;
+        let idTransacaoEditando = null;
+
         let meuGrafico = null;
         let meuGraficoLinha = null; 
         let db = null; 
@@ -429,9 +543,7 @@
         }
 
         async function iniciarFirebase() {
-            // MODIFICADO: Limpa o lixo antigo do cache apenas no primeiro clique para iniciar zerado
             localStorage.clear();
-            
             carregarDadosLocais(); 
             atualizarInterfaceGlobal(); 
             
@@ -629,6 +741,140 @@
             return bancoFind ? bancoFind.nome : 'Sem Banco'; 
         }
 
+        // ==========================================
+        // FUNÇÕES DE EDIÇÃO (BANCOS E AGENDAS)
+        // ==========================================
+
+        function abrirEditConta(id) {
+            const c = contasBancarias.find(x => x.id === id);
+            if(!c) return;
+            idContaEditando = id;
+            document.getElementById('edit-conta-nome').value = c.nome;
+            document.getElementById('edit-conta-inicial').value = c.saldoInicial;
+            document.getElementById('modal-edit-conta').classList.remove('hidden');
+        }
+
+        function fecharEditConta() {
+            document.getElementById('modal-edit-conta').classList.add('hidden');
+            idContaEditando = null;
+        }
+
+        function salvarEditConta() {
+            if(!idContaEditando) return;
+            const c = contasBancarias.find(x => x.id === idContaEditando);
+            if(c) {
+                const nomeAntigo = c.nome;
+                c.nome = document.getElementById('edit-conta-nome').value;
+                c.saldoInicial = parseFloat(document.getElementById('edit-conta-inicial').value) || 0;
+
+                transacoes.forEach(t => {
+                    if(t.contaId === c.id) t.contaNome = c.nome;
+                    if(t.contaOrigem === c.id) t.nomeOrigem = c.nome;
+                });
+
+                salvarEAtualizar();
+            }
+            fecharEditConta();
+        }
+
+        function abrirEditPagar(id) {
+            const c = contasPagar.find(x => x.id === id);
+            if(!c) return;
+            idPagarEditando = id;
+            document.getElementById('edit-pagar-nome').value = c.nome;
+            document.getElementById('edit-pagar-valor').value = c.valor;
+            document.getElementById('edit-pagar-data').value = c.dataVencimento;
+            document.getElementById('modal-edit-pagar').classList.remove('hidden');
+        }
+
+        function fecharEditPagar() {
+            document.getElementById('modal-edit-pagar').classList.add('hidden');
+            idPagarEditando = null;
+        }
+
+        function salvarEditPagar() {
+            if(!idPagarEditando) return;
+            const c = contasPagar.find(x => x.id === idPagarEditando);
+            if(c) {
+                c.nome = document.getElementById('edit-pagar-nome').value;
+                c.valor = parseFloat(document.getElementById('edit-pagar-valor').value) || 0;
+                c.dataVencimento = document.getElementById('edit-pagar-data').value;
+                salvarEAtualizar();
+            }
+            fecharEditPagar();
+        }
+
+        // ==========================================
+        // FUNÇÕES DE EDIÇÃO (LANÇAMENTOS)
+        // ==========================================
+
+        function abrirEditTransacao(id) {
+            const t = transacoes.find(x => x.id === id);
+            if(!t) return;
+            
+            idTransacaoEditando = id;
+            document.getElementById('edit-transacao-descricao').value = t.descricao;
+            document.getElementById('edit-transacao-valor').value = t.valor;
+            document.getElementById('edit-transacao-data').value = t.data;
+            
+            const boxCat = document.getElementById('edit-box-categoria');
+            const boxOrigem = document.getElementById('edit-box-origem');
+            const labelConta = document.getElementById('edit-label-conta');
+            
+            if(t.tipo === 'transferencia') {
+                boxCat.classList.add('hidden');
+                boxOrigem.classList.remove('hidden');
+                labelConta.innerText = 'Destino (Para)';
+                document.getElementById('edit-transacao-origem').value = t.contaOrigem;
+            } else {
+                boxCat.classList.remove('hidden');
+                boxOrigem.classList.add('hidden');
+                labelConta.innerText = t.tipo === 'despesa' ? 'De onde saiu?' : 'Para onde foi?';
+                document.getElementById('edit-transacao-categoria').value = t.categoria;
+            }
+            
+            document.getElementById('edit-transacao-conta').value = t.contaId;
+            document.getElementById('modal-edit-transacao').classList.remove('hidden');
+        }
+
+        function fecharEditTransacao() {
+            document.getElementById('modal-edit-transacao').classList.add('hidden');
+            idTransacaoEditando = null;
+        }
+
+        function salvarEditTransacao() {
+            if(!idTransacaoEditando) return;
+            const t = transacoes.find(x => x.id === idTransacaoEditando);
+            if(t) {
+                t.descricao = document.getElementById('edit-transacao-descricao').value;
+                t.valor = parseFloat(document.getElementById('edit-transacao-valor').value) || 0;
+                t.data = document.getElementById('edit-transacao-data').value;
+                
+                const cDest = document.getElementById('edit-transacao-conta').value;
+                
+                if(t.tipo === 'transferencia') {
+                    const cOrig = document.getElementById('edit-transacao-origem').value;
+                    if(cOrig === cDest) {
+                        alert("A conta de Origem e Destino devem ser diferentes!");
+                        return;
+                    }
+                    t.contaOrigem = cOrig;
+                    t.nomeOrigem = obterNomeConta(cOrig);
+                } else {
+                    t.categoria = document.getElementById('edit-transacao-categoria').value;
+                }
+                
+                t.contaId = cDest;
+                t.contaNome = obterNomeConta(cDest);
+                
+                transacoes.sort((a,b) => new Date(b.data || a.id) - new Date(a.data || b.id));
+                salvarEAtualizar();
+            }
+            fecharEditTransacao();
+        }
+
+        // ==========================================
+
         document.getElementById('form-transacao').addEventListener('submit', function(e) {
             e.preventDefault();
             const valorLancado = parseFloat(document.getElementById('valor').value); 
@@ -713,7 +959,13 @@
         }
 
         function atualizarSelectBancos() {
-            const selects = [document.getElementById('select-contas'), document.getElementById('select-origem'), document.getElementById('modal-select-conta')];
+            const selects = [
+                document.getElementById('select-contas'), 
+                document.getElementById('select-origem'), 
+                document.getElementById('modal-select-conta'),
+                document.getElementById('edit-transacao-conta'),
+                document.getElementById('edit-transacao-origem')
+            ];
             let optionsHTML = ''; 
             contasBancarias.forEach(c => optionsHTML += `<option value="${c.id}">${c.nome}</option>`);
             
@@ -730,7 +982,13 @@
                 conteinerHome.innerHTML = '';
                 contasBancarias.forEach(c => {
                     const div = document.createElement('div'); div.className = "bg-gray-50 border border-gray-200 p-3.5 rounded-2xl flex flex-col justify-between relative group shadow-sm";
-                    div.innerHTML = `<button onclick="deletarConta('${c.id}')" class="absolute top-2 right-2 text-gray-300 hover:text-red-500 text-xs"><i class="fa-solid fa-trash"></i></button><span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider truncate pr-4">${c.nome}</span><span class="text-sm font-black text-gray-900 mt-1">${formatarMoeda(saldosCalculados[c.id] || 0)}</span>`;
+                    div.innerHTML = `
+                        <div class="absolute top-2 right-2 flex space-x-1.5">
+                            <button onclick="abrirEditConta('${c.id}')" class="text-gray-300 hover:text-blue-500 text-xs transition-colors"><i class="fa-solid fa-pen"></i></button>
+                            <button onclick="deletarConta('${c.id}')" class="text-gray-300 hover:text-red-500 text-xs transition-colors"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                        <span class="text-[11px] font-bold text-gray-500 uppercase tracking-wider truncate pr-10">${c.nome}</span>
+                        <span class="text-sm font-black text-gray-900 mt-1">${formatarMoeda(saldosCalculados[c.id] || 0)}</span>`;
                     conteinerHome.appendChild(div);
                 });
             }
@@ -759,7 +1017,7 @@
                 let badgeParcela = c.tipo === 'parcelada' ? `<span class="bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded ml-1 font-bold">${pagouEsteMes ? c.parcelasPagas : Math.min(c.parcelasPagas + 1, c.totalParcelas)}/${c.totalParcelas}</span>` : '';
 
                 const div = document.createElement('div'); div.className = `flex items-center justify-between p-3.5 rounded-2xl border shadow-sm transition-all ${classeFundo}`;
-                div.innerHTML = `<div class="flex items-center space-x-3 truncate"><button onclick="clicarPagarFixo(${c.id})" class="text-2xl ${classeBotao} transition-colors"><i class="${pagouEsteMes ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'}"></i></button><div class="flex flex-col truncate"><div class="flex items-center"><span class="text-xs font-black ${classeTexto} truncate uppercase tracking-tight">${c.nome}</span>${badgeVencimento}${badgeParcela}</div><span class="text-[11px] text-gray-500 font-bold mt-0.5 border border-gray-200 bg-white px-1.5 rounded w-max shadow-sm text-center">R$ ${c.valor.toFixed(2).replace('.',',')}</span></div></div><button onclick="deletarContaPagar(${c.id})" class="text-gray-300 hover:text-red-500 p-2"><i class="fa-solid fa-trash text-sm"></i></button>`;
+                div.innerHTML = `<div class="flex items-center space-x-3 truncate"><button onclick="clicarPagarFixo(${c.id})" class="text-2xl ${classeBotao} transition-colors"><i class="${pagouEsteMes ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle'}"></i></button><div class="flex flex-col truncate"><div class="flex items-center"><span class="text-xs font-black ${classeTexto} truncate uppercase tracking-tight">${c.nome}</span>${badgeVencimento}${badgeParcela}</div><span class="text-[11px] text-gray-500 font-bold mt-0.5 border border-gray-200 bg-white px-1.5 rounded w-max shadow-sm text-center">R$ ${c.valor.toFixed(2).replace('.',',')}</span></div></div><div class="flex space-x-1 pl-2"><button onclick="abrirEditPagar(${c.id})" class="text-gray-300 hover:text-indigo-500 p-1.5 transition-colors"><i class="fa-solid fa-pen text-sm"></i></button><button onclick="deletarContaPagar(${c.id})" class="text-gray-300 hover:text-red-500 p-1.5 transition-colors"><i class="fa-solid fa-trash text-sm"></i></button></div>`;
                 container.appendChild(div);
             });
             document.getElementById('resumo-fixo-pendente').innerText = formatarMoeda(totalPendente);
@@ -816,7 +1074,10 @@
                             <span class="font-black text-sm ${classTexto}">${sinalMoeda}${formatarMoeda(t.valor)}</span>
                             <span class="text-[9px] font-bold text-gray-400 bg-gray-100 px-1.5 py-0.5 rounded mt-0.5">${dataFormatada}</span>
                         </div>
-                        <button onclick="deletarTransacao(${t.id})" class="text-gray-300 hover:text-red-500 p-1 bg-gray-50 rounded-lg ml-1"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex space-x-1 border-l border-gray-100 pl-2">
+                            <button onclick="abrirEditTransacao(${t.id})" class="text-gray-400 hover:text-blue-500 p-2 bg-gray-50 rounded-lg transition-colors"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                            <button onclick="deletarTransacao(${t.id})" class="text-gray-400 hover:text-red-500 p-2 bg-gray-50 rounded-lg transition-colors"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+                        </div>
                     </div>
                 `;
                 container.appendChild(div);
@@ -943,7 +1204,6 @@
             let containerCat = document.getElementById('dash-lista-categorias');
             containerCat.innerHTML = '';
 
-            // MODIFICADO: Se não houver dados salvos no mês, limpa o canvas em vez de tentar injetar dados zerados no Chart.js
             if(labelsGrafico.length === 0) { 
                 ctx.clearRect(0, 0, 100, 100); 
                 containerCat.innerHTML = '<p class="text-center text-xs text-gray-400 py-4"><i class="fa-solid fa-circle-exinfo mr-1"></i> Nenhum gasto registrado neste mês.</p>';
@@ -1004,7 +1264,6 @@
             if (meuGraficoLinha) { meuGraficoLinha.destroy(); }
             const ctxLinha = document.getElementById('graficoLinhaPatrimonio').getContext('2d');
             
-            // MODIFICADO: Se não houver histórico de meses anteriores, exibe aviso limpo no lugar de quebrar o Chart
             if(labelsLinha.length === 0) {
                 ctxLinha.clearRect(0, 0, 100, 100);
             } else {
